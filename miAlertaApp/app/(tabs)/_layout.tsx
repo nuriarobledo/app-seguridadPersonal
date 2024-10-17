@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { ContactsOutlined } from '@ant-design/icons';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -28,7 +29,7 @@ export default function TabLayout() {
         options={{
           title: 'Contactos',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <AntDesign name= 'contacts' size={24} color={color} />
           ),
         }}
       />
