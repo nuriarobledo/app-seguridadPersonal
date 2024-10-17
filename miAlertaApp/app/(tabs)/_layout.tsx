@@ -1,7 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { ContactsOutlined } from '@ant-design/icons';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -30,6 +29,15 @@ export default function TabLayout() {
           title: 'Contactos',
           tabBarIcon: ({ color, focused }) => (
             <AntDesign name= 'contacts' size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="consejosSeguridad"
+        options={{
+          title: 'Consejos',
+          tabBarIcon: ({ color, focused }) => (
+            <AntDesign name= 'Safety' size={24} color={color} />
           ),
         }}
       />
