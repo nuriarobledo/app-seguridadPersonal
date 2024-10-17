@@ -1,7 +1,10 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity  } from 'react-native';
+import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+
+import AntDesign from '@expo/vector-icons/AntDesign';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
 
 const consejos = [
   "Busca un lugar seguro.",
@@ -12,7 +15,11 @@ const consejos = [
 ];
 
 const InformacionSeguridad: React.FC = () => {
-    return (
+  return (
+    <ParallaxScrollView
+      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
+      headerImage={<AntDesign name="Safety" size={24} color="black" />}
+    >
       <ThemedView style={styles.container}>
         <View style={styles.header}>
           <ThemedText type="title">Consejos de Seguridad</ThemedText>
@@ -25,42 +32,43 @@ const InformacionSeguridad: React.FC = () => {
           ))}
         </ScrollView>
       </ThemedView>
-    );
-  };
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 16,
-    },
-    header: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginBottom: 16,
-    },
-    icon: {
-      marginRight: 8,
-      fontSize: 24,
-      color: '#000',
-    },
-    scrollContainer: {
-      paddingBottom: 16,
-    },
-    card: {
-      backgroundColor: '#fff', 
-      borderRadius: 8,
-      padding: 16,
-      marginVertical: 8,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      elevation: 2, 
-    },
-    consejo: {
-      fontSize: 16,
-      color: '#333',
-    },
-  });
-  
-  export default InformacionSeguridad;
+    </ParallaxScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  icon: {
+    marginRight: 8,
+    fontSize: 24,
+    color: '#000',
+  },
+  scrollContainer: {
+    paddingBottom: 16,
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 16,
+    marginVertical: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  consejo: {
+    fontSize: 16,
+    color: '#333',
+  },
+});
+
+export default InformacionSeguridad;
