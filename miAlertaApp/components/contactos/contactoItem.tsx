@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { AntDesign } from '@expo/vector-icons';
 
 interface ContactoItemProps {
   nombre: string;
@@ -8,14 +10,23 @@ interface ContactoItemProps {
 }
 
 const ContactoItem: React.FC<ContactoItemProps> = ({ nombre, telefono, onEliminar }) => {
+    // Función para realizar la llamada
+    const llamarContacto = () => {
+      Linking.openURL(`tel:${telefono}`);
+    };
+ 
+ 
   return (
     <View style={styles.contactoContainer}>
       <View>
         <Text style={styles.contactoNombre}>{nombre}</Text>
         <Text style={styles.contactoTelefono}>{telefono}</Text>
       </View>
+      <TouchableOpacity onPress={llamarContacto} style={styles.botonLlamar}>
+        <Ionicons name="call-outline" size={24} color="white" />
+      </TouchableOpacity>
       <TouchableOpacity onPress={onEliminar} style={styles.botonEliminar}>
-        <Text style={styles.botonEliminarTexto}>Eliminar</Text>
+        <AntDesign name="delete" size={24} color="white" />
       </TouchableOpacity>
     </View>
   );
@@ -47,9 +58,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
   },
-  botonEliminarTexto: {
-    color: '#fff',
-    fontWeight: 'bold',
+  botonLlamar: {
+    padding: 10,
+    borderRadius: 5,
+    backgroundColor: 'green',
+    marginLeft: 130,
   },
 });
 
