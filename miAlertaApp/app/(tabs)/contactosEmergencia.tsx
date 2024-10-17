@@ -46,7 +46,7 @@ export default function TabTwoScreen() {
       </ThemedView>
 
       {/* Icono para abrir el modal */}
-      <TouchableOpacity onPress={() => setModalVisible(true)}>
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.botonAgregar}>
         <Ionicons name="person-add-outline" size={28} color="white" />
       </TouchableOpacity>
 
@@ -109,5 +109,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+  },
+  botonAgregar: {
+    backgroundColor: '#3e93f9',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'flex-end',
+    width: 50,
   },
 });
