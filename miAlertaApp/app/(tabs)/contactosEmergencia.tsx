@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform } from 'react-native';
+import { StyleSheet, Button, Modal, View, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
@@ -14,6 +14,8 @@ import ContactosList from '@/components/contactos/contactosList';
 import AgregarContacto from '@/components/contactos/contactoAdd';
 
 export default function TabTwoScreen() {
+  //modal para agregar contacto
+  const [modalVisible, setModalVisible] = useState(false);
   const [contactos, setContactos] = useState<{ id: string; nombre: string; telefono: string }[]>([
     { id: '1', nombre: 'Juan Pérez', telefono: '123456789' },
     { id: '2', nombre: 'Ana Gómez', telefono: '987654321' },
@@ -21,11 +23,13 @@ export default function TabTwoScreen() {
 
   const agregarContacto = (nombre: string, telefono: string) => {
     const nuevo = {
+      //random hasta que este la bd
       id: Math.random().toString(),
       nombre,
       telefono,
     };
     setContactos((prevContactos) => [...prevContactos, nuevo]);
+    setModalVisible(false); //cierra el modal desp de crear un contacto
   };
 
   const eliminarContacto = (id: string) => {
@@ -40,14 +44,34 @@ export default function TabTwoScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Contactos de Emergencia</ThemedText>
       </ThemedView>
-      
+
+      {/* Icono para abrir el modal */}
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.botonAgregar}>
+        <Ionicons name="person-add-outline" size={28} color="white" />
+      </TouchableOpacity>
+
       {/* Lista de contactos */}
       <ContactosList contactos={contactos} eliminarContacto={eliminarContacto} />
-      
-      {/* Componente para agregar contactos */}
-      <AgregarContacto agregarContacto={agregarContacto} />
 
-      
+
+      {/* Modal para agregar contactos */}
+      <Modal
+        animationType="slide"
+        transparent={true} 
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <AgregarContacto agregarContacto={agregarContacto} />
+
+            <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.closeButton}>
+              <Ionicons name="close-outline" size={32} color="black" />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
     </ParallaxScrollView>
   );
 }
@@ -62,5 +86,35 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     gap: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff', 
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+  },
+  botonAgregar: {
+    backgroundColor: '#3e93f9',
+    padding: 10,
+    borderRadius: 5,
+    alignSelf: 'flex-end',
+    width: 50,
   },
 });
