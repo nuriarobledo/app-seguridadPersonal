@@ -1,39 +1,75 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Pressable, Text, View, Alert } from 'react-native';
+import { StyleSheet, Pressable, Text, View, Alert, AppState } from 'react-native';
+
+//expo para msj
+import * as SMS from 'expo-sms';
 
 export const EmergencyButton = () => {
   const [emergenciaPresionada, setEmergenciaPresionada] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [timerActive, setTimerActive] = useState(false);
+  const [contactoEmergencia, setContactoEmergencia] = useState<{ id: string; nombre: string; telefono: string }[]>([
+    { id: '1', nombre: 'Juan', telefono: '123456478' },
+  ]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;  // Especificar el tipo de 'timer'
-    
+    let timer: NodeJS.Timeout | undefined;
+
     if (timerActive && countdown > 0) {
-      timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      timer = setTimeout(() => setCountdown(prev => prev - 1), 1000);
     } else if (countdown === 0) {
-        console.log(("llego a cero"))
       handleEmergencyAction();
     }
 
-    // Limpiar el temporizador cuando el componente se desmonte
-    return () => clearTimeout(timer);
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
   }, [countdown, timerActive]);
 
-  const handleEmergencyAction = () => {
-    Alert.alert(
-      'Alerta de Emergencia',
-      '¡Se ha enviado la alerta!',
-      [
-        {
-          text: 'OK', 
-          onPress: resetButton 
-        }
-      ],
-      { cancelable: false }
-    );
-    console.log('¡Emergencia activada! Se envía la alerta.');
+  // Manejar el estado de la app
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+  const handleAppStateChange = (nextAppState: string) => {
+    if (nextAppState === 'inactive' || nextAppState === 'background') {
+      resetButton(); // Resetea el botón si la app pierde foco
+    }
   };
+
+  const handleEmergencyAction = async () => {
+    const isAvailable = await SMS.isAvailableAsync();
+    console.log("telefono", contactoEmergencia[0].telefono);
+    if (isAvailable) {
+      const { result } = await SMS.sendSMSAsync(
+        [contactoEmergencia[0].telefono], // Número de teléfono hardcodeado
+        '¡Emergencia! Necesito ayuda. Por favor, comunícate conmigo lo antes posible.'
+      );
+      if (result === 'sent' || result === 'cancelled'){
+        setTimeout(() => {
+          resetButton(); // Resetear estado después de un breve delay
+        }, 500);
+      }
+    } else {
+      Alert.alert(
+        'Alerta de Emergencia',
+        'No se pudo enviar la alerta. Por favor, intenta nuevamente.',
+        [
+          {
+            text: 'OK', 
+            onPress: resetButton, // Restablecer el botón si no está disponible el SMS
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+
+
   const handlePress = () => {
     setEmergenciaPresionada(true);
     setTimerActive(true);
@@ -61,7 +97,7 @@ export const EmergencyButton = () => {
         </Pressable>
       ) : (
         <View style={styles.countdownContainer}>
-          <Text style={styles.countdownText}>Emergencia en {countdown}...</Text>
+          <Text style={styles.countdownText}>Enviando alerta a {contactoEmergencia[0].nombre} en {countdown}...</Text>
           <Pressable style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.cancelButtonText}>Cancelar</Text>
           </Pressable>
@@ -87,19 +123,21 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   countdownContainer: {
     alignItems: 'center',
+    paddingVertical: 20,
+    width: '60%',
   },
   countdownText: {
-    fontSize: 24,
-    color: 'red',
+    fontSize: 28,
+    color: 'white',
     marginBottom: 20,
   },
   cancelButton: {
-    backgroundColor: 'gray',
+    backgroundColor: 'red',
     padding: 10,
     borderRadius: 10,
   },
