@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import Feather from '@expo/vector-icons/Feather';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -46,7 +47,7 @@ export default function TabLayout() {
         options={{
           title: 'Mapa',
           tabBarIcon: ({ color, focused }) => (
-            <AntDesign name= 'Safety' size={24} color={color} />
+            <Feather name="map-pin" size={24} color={color}/>
           ),
         }}
       />
@@ -55,7 +56,7 @@ export default function TabLayout() {
         options={{
           title: 'Configuración',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <AntDesign name="setting" size={24} color={color} />
           ),
         }}
       />
