@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../assets/types'; 
@@ -25,6 +25,12 @@ const Login = () => {
     }
   };
 
+  const handleRegistro = () => {
+
+      navigation.navigate('registro'); 
+   
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Iniciar Sesión</Text>
@@ -41,7 +47,14 @@ const Login = () => {
         value={password}
         onChangeText={setPassword}
       />
-      <Button title="Iniciar Sesión" onPress={handleLogin} />
+      <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Iniciar Sesión</Text>
+      </TouchableOpacity>
+
+      {/* Botón de registro */}
+      <TouchableOpacity onPress={handleRegistro}>
+        <Text style={styles.buttonRegistro}>Registrarme</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -63,6 +76,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 12,
     paddingLeft: 8,
+  },
+  buttonLogin: {
+    backgroundColor: '#007BFF', //celeste
+    paddingVertical: 12, 
+    paddingHorizontal: 20, 
+    borderRadius: 5, 
+    alignItems: 'center', 
+    marginTop: 10, 
+  },
+  buttonText: {
+    color: '#FFFFFF', // blanco
+    fontSize: 16, 
+    fontWeight: 'bold', 
+  },
+  buttonRegistro: {
+    color: '#003366', // Azul oscuro
+    textDecorationLine: 'underline',
+    textAlign: 'center',
+    marginTop: 20, 
   },
 });
 
