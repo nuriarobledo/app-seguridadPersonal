@@ -8,6 +8,7 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../assets/types";
@@ -93,6 +94,7 @@ const Registro = () => {
           style={styles.buttonHuella}
           onPress={() => handleRegistroBiometrico(navigation)}
         >
+          <Ionicons name="finger-print" size={24} color="black" />
           <Text style={styles.buttonTextBlack}>Registrar Huella Dactilar</Text>
         </TouchableOpacity>
       )}
