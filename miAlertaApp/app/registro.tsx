@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../assets/types";
 import * as LocalAuthentication from "expo-local-authentication";
 
 //componentes
-import HuellaRegistro from "../components/login/HuellaRegistro";
+import handleRegistroBiometrico from "../components/login/HuellaRegistro";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -74,14 +82,20 @@ const Registro = () => {
         secureTextEntry
         keyboardType="numeric"
       />
-
       {/* Registro de huella dactilar */}
       {isBiometricSupported && (
-        <HuellaRegistro onSuccess={() => setHuellaDactilar(huellaDactilar)} />
+        <TouchableOpacity
+          style={styles.buttonHuella}
+          onPress={() => handleRegistroBiometrico(navigation)}
+        >
+          <Text style={styles.buttonTextBlack}>Registrar Huella Dactilar</Text>
+        </TouchableOpacity>
       )}
 
       {/* boton registro */}
-      <Button title="Registrarme" onPress={handleRegistro} />
+      <TouchableOpacity style={styles.buttonRegistarme} onPress={handleRegistro}>
+        <Text style={styles.buttonTextWhite}>Registrarme</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -90,8 +104,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f5f5f5",
     padding: 16,
   },
   title: {
@@ -107,6 +119,34 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingHorizontal: 10,
     width: "100%",
+  },
+  buttonRegistarme: {
+    backgroundColor: "#007BFF", // celeste
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop: 30,
+  },
+  buttonTextWhite: {
+    color: "#FFFFFF", // blanco
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  buttonHuella: {
+    backgroundColor: "transparent",
+    borderColor: "#007BBF", // azul oscuro
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 5,
+  },
+  buttonTextBlack: {
+    color: "#000000", // negro
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
