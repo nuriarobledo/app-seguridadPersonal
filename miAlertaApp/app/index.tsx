@@ -9,19 +9,19 @@ type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'index'
 const Login = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [pin, setPin] = useState('');
 
   const handleLogin = () => {
     // Credenciales hardcodeadas
     const hardcodedEmail = 'usuario@example.com';
-    const hardcodedPassword = '123';
+    const hardcodedPin = '1234';
 
-    if (email === hardcodedEmail && password === hardcodedPassword) {
+    if (email === hardcodedEmail && pin === hardcodedPin) {
       // Navegar a la pantalla de inicio
       navigation.navigate('(tabs)'); 
     } else {
       // Mostrar un mensaje de error
-      Alert.alert('Error', 'Usuario o contraseña incorrectos');
+      Alert.alert('Error', 'Usuario o pin incorrectos');
     }
   };
 
@@ -42,10 +42,10 @@ const Login = () => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
+        placeholder="PIN"
+        keyboardType="phone-pad"
+        value={pin}
+        onChangeText={setPin}
       />
       <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
         <Text style={styles.buttonText}>Iniciar Sesión</Text>
