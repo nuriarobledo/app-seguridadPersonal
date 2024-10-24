@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../assets/types";
+import * as LocalAuthentication from "expo-local-authentication";
+
+//componentes
+import HuellaRegistro from "../components/login/HuellaRegistro";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -11,21 +15,32 @@ type LoginScreenNavigationProp = StackNavigationProp<
 
 const Registro = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
+
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [numeroCelular, setNumeroCelular] = useState("");
   const [pin, setPin] = useState("");
+  const [huellaDactilar, setHuellaDactilar] = useState("");
+  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
-  const handleRegistro = () => {
+  useEffect(() => {
+    const checkBiometricSupport = async () => {
+      const compatible = await LocalAuthentication.hasHardwareAsync();
+      setIsBiometricSupported(compatible);
+    };
+    checkBiometricSupport();
+  }, []);
+
+  const handleRegistro = async () => {
     Alert.alert(
       "Registro exitoso",
       `Nombre: ${nombre}\nEmail: ${email}\nNúmero Celular: ${numeroCelular}\nCódigo PIN: ${pin}`
     );
 
-    // espera 2 segundos antes de navegar
+    // Espera 2 segundos antes de navegar
     setTimeout(() => {
       navigation.navigate("index");
-    }, 800); // 2000 ms = 2 segundos
+    }, 800);
   };
 
   return (
@@ -59,6 +74,13 @@ const Registro = () => {
         secureTextEntry
         keyboardType="numeric"
       />
+
+      {/* Registro de huella dactilar */}
+      {isBiometricSupported && (
+        <HuellaRegistro onSuccess={() => setHuellaDactilar(huellaDactilar)} />
+      )}
+
+      {/* boton registro */}
       <Button title="Registrarme" onPress={handleRegistro} />
     </View>
   );

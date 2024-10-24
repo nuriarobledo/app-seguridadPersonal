@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -12,6 +12,9 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../assets/types";
 
+//componentes
+import HuellaAutenticacion from "../components/login/HuellaAutenticacion";
+
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "index"
@@ -19,6 +22,7 @@ type LoginScreenNavigationProp = StackNavigationProp<
 
 const Login = () => {
   const navigation = useNavigation<LoginScreenNavigationProp>();
+
   const [email, setEmail] = useState("");
   const [pin, setPin] = useState("");
 
@@ -32,7 +36,7 @@ const Login = () => {
       navigation.navigate("(tabs)");
     } else {
       // Mostrar un mensaje de error
-      Alert.alert("Error", "Usuario o pin incorrectos");
+      Alert.alert("Error", "Usuario o PIN incorrectos");
     }
   };
 
@@ -58,13 +62,28 @@ const Login = () => {
         secureTextEntry
         keyboardType="numeric"
       />
+
+      {/* Botón de olvidé pin */}
+      <TouchableOpacity onPress={handleRegistro}>
+        <Text style={styles.buttonRestaurarPin}>Olvidé mi pin</Text>
+      </TouchableOpacity>
+
+      {/* Botón de inicio de sesión */}
       <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Iniciar Sesión</Text>
+        <Text style={styles.buttonTextWhite}>Iniciar Sesión</Text>
       </TouchableOpacity>
 
       {/* Botón de registro */}
       <TouchableOpacity onPress={handleRegistro}>
         <Text style={styles.buttonRegistro}>Registrarme</Text>
+      </TouchableOpacity>
+
+      {/* Botón de inicio con huella */}
+      <TouchableOpacity
+        style={styles.buttonHuella}
+        onPress={() => HuellaAutenticacion(navigation)}
+      >
+        <Text style={styles.buttonTextBlack}>Iniciar con huella</Text>
       </TouchableOpacity>
     </View>
   );
@@ -88,15 +107,21 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     paddingLeft: 8,
   },
+  buttonRestaurarPin: {
+    color: "#003366", // Azul oscuro
+    textDecorationLine: "underline",
+    textAlign: "left",
+    marginTop: 0,
+  },
   buttonLogin: {
-    backgroundColor: "#007BFF", //celeste
+    backgroundColor: "#007BFF", // celeste
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 30,
   },
-  buttonText: {
+  buttonTextWhite: {
     color: "#FFFFFF", // blanco
     fontSize: 16,
     fontWeight: "bold",
@@ -106,6 +131,21 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     textAlign: "center",
     marginTop: 20,
+  },
+  buttonHuella: {
+    backgroundColor: "transparent",
+    borderColor: "#007BBF", // azul oscuro
+    borderWidth: 2,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 100,
+  },
+  buttonTextBlack: {
+    color: "#000000", // negro
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
