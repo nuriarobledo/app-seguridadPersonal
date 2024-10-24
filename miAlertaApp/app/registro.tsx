@@ -15,6 +15,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 
 //componentes
 import handleRegistroBiometrico from "../components/login/HuellaRegistro";
+import validarDataRegistroUsuario from "../components/validaciones/validarDataRegistroUsuario";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -40,6 +41,10 @@ const Registro = () => {
   }, []);
 
   const handleRegistro = async () => {
+    if (!validarDataRegistroUsuario(nombre, email, numeroCelular, pin)) {
+      return;
+    }
+
     Alert.alert(
       "Registro exitoso",
       `Nombre: ${nombre}\nEmail: ${email}\nNúmero Celular: ${numeroCelular}\nCódigo PIN: ${pin}`
@@ -93,7 +98,10 @@ const Registro = () => {
       )}
 
       {/* boton registro */}
-      <TouchableOpacity style={styles.buttonRegistarme} onPress={handleRegistro}>
+      <TouchableOpacity
+        style={styles.buttonRegistarme}
+        onPress={handleRegistro}
+      >
         <Text style={styles.buttonTextWhite}>Registrarme</Text>
       </TouchableOpacity>
     </View>
@@ -110,7 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    textAlign: "center", 
+    textAlign: "center",
   },
   input: {
     height: 40,
