@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../assets/types'; 
+
+type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'index'>;
 
 const Registro = () => {
+    const navigation = useNavigation<LoginScreenNavigationProp>();
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [numeroCelular, setNumeroCelular] = useState('');
@@ -9,7 +15,13 @@ const Registro = () => {
 
     const handleRegistro = () => {
         Alert.alert('Registro exitoso', `Nombre: ${nombre}\nEmail: ${email}\nNúmero Celular: ${numeroCelular}\nCódigo PIN: ${pin}`);
+
+        // espera 2 segundos antes de navegar
+        setTimeout(() => {
+            navigation.navigate('index'); 
+        }, 800); // 2000 ms = 2 segundos
     };
+
 
     return (
         <View style={styles.container}>
