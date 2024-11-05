@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MapView, { PROVIDER_GOOGLE, Region } from 'react-native-maps';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, Text } from 'react-native';
 import * as Location from 'expo-location';  // Importa expo-location
 
 // Define el tipo para la región
@@ -11,15 +11,19 @@ interface IRegion {
   longitudeDelta: number;
 }
 
-export default function Lugares_Seguros() {
+export default function TabFourScreens() {
   const [region, setRegion] = useState<IRegion | null>(null);  // Estado con tipo para la región
+  const [loading, setLoading] = useState(true);  // Estado para manejar la carga
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);  // Estado para mensajes de error
 
-  useEffect(() => {
-    (async () => {
-      // Pedir permisos de ubicación al iniciar
+  // Función para obtener la ubicación
+  const fetchLocation = async () => {
+    try {
+      // Pedir permisos de ubicación
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        console.log("Permiso de ubicación denegado.");
+        setErrorMsg("Permiso de ubicación denegado.");
+        setLoading(false);
         return;
       }
 
@@ -34,8 +38,36 @@ export default function Lugares_Seguros() {
         latitudeDelta: 0.01,  // Zoom del mapa
         longitudeDelta: 0.01, // Zoom del mapa
       });
-    })();
+    } catch (error) {
+      setErrorMsg("Error obteniendo la ubicación.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // useEffect para obtener la ubicación al montar el componente
+  useEffect(() => {
+    fetchLocation();
   }, []);
+
+  if (loading) {
+    // Mostrar spinner mientras se carga la ubicación
+    return (
+      <View style={styles.loader}>
+        <ActivityIndicator size="large" color="#0000ff" />
+        <Text>Cargando ubicación...</Text>
+      </View>
+    );
+  }
+
+  if (errorMsg) {
+    // Mostrar el mensaje de error si ocurre algún problema
+    return (
+      <View style={styles.errorContainer}>
+        <Text>{errorMsg}</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -54,5 +86,15 @@ export default function Lugares_Seguros() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
