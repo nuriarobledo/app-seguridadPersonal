@@ -68,15 +68,11 @@ export default function ContactosEmergenciaScreen() {
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: "#4fdf57",
-    bottom: -90,
-    left: -35,
-    position: "absolute",
-  },
   titleContainer: {
     flexDirection: "row",
+    alignItems: "center",
     gap: 8,
+    marginTop: 40,
   },
   modalOverlay: {
     flex: 1,
