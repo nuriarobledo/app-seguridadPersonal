@@ -30,8 +30,9 @@ const AgregarContacto = ( ) => {
   }, []);
 
   const handleAgregarContacto = async () => {
+    // Verifica solo si nombre, celular e idUsuario son válidos
     if (nombre && celular && idUsuario !== null) {
-      const result = await addContactoEmergencia(idUsuario, nombre, celular, relacion);
+      const result = await addContactoEmergencia(idUsuario, nombre, celular, relacion || undefined);
       if (result) {
         console.log("Contacto agregado exitosamente");
       } else {

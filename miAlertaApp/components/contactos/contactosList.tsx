@@ -12,6 +12,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ThemedView } from "../ThemedView";
 import { ThemedText } from "../ThemedText";
+import ContactoItem from "../contactos/contactoItem";
 
 //data
 import {
@@ -23,12 +24,14 @@ import {
 export default function ContactosList({}) {
   const [listado, setListadoContactoEmergencia] = useState<
     ContactoEmergencia[]
-  >([]); // almacena los hábitos
+  >([]); // almacena los contactos
+  const [idUsuario, setIdUsuario] = useState<number | null>(null);
 
   const obtenerContactosEmergencia = async () => {
     try {
       const id = await AsyncStorage.getItem("userId");
       if (id !== null) {
+        setIdUsuario(Number(id));
         // Usa el firebaseId para obtener los hábitos
         const listado = await getContactoEmergenciaByIdUser(Number(id));
         console.log("Listado de contacto de emergencia obtenidos:", listado);
@@ -77,23 +80,15 @@ export default function ContactosList({}) {
         <Text style={styles.mensajeVacio}>No hay contactos de emergencia</Text>
       ) : (
         listado.map((item) => (
-          <TouchableOpacity
+          <ContactoItem
             key={item.id}
-            style={styles.contactoItem}
-            onPress={() => console.log("Contacto seleccionado:", item.nombre)}
-          >
-            <View style={styles.contactoContent}>
-              <Text style={styles.nombre}>{item.nombre}</Text>
-              <Text style={styles.telefono}>{item.celular}</Text>
-              <Text style={styles.telefono}>{item.relacion}</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => eliminarContacto(item.id)}
-              style={styles.deleteButton}
-            >
-              <Icon name="trash-outline" size={24} color="#d9534f" />
-            </TouchableOpacity>
-          </TouchableOpacity>
+            nombre={item.nombre}
+            celular={item.celular}
+            relacion={item.relacion? item.relacion : ""}
+            onEliminar={() => eliminarContacto(item.id)}
+            id={item.id}
+            idUsuario={idUsuario!}
+          />
         ))
       )}
     </ScrollView>

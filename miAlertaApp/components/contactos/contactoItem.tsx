@@ -1,26 +1,37 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { AntDesign } from '@expo/vector-icons';
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Linking,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { AntDesign } from "@expo/vector-icons";
 
-interface ContactoItemProps {
-  nombre: string;
-  telefono: string;
-  onEliminar: () => void;
-}
+//data
+import { ContactoEmergencia } from "../../database/database";
 
-const ContactoItem: React.FC<ContactoItemProps> = ({ nombre, telefono, onEliminar }) => {
-    // Función para realizar la llamada
-    const llamarContacto = () => {
-      Linking.openURL(`tel:${telefono}`);
-    };
- 
- 
+const ContactoItem = ({
+  nombre,
+  celular,
+  relacion,
+  onEliminar,
+}: ContactoEmergencia & { onEliminar: () => void }) => {
+  // Función para realizar la llamada
+  const llamarContacto = () => {
+    Linking.openURL(`tel:${celular}`);
+  };
+
   return (
     <View style={styles.contactoContainer}>
       <View>
         <Text style={styles.contactoNombre}>{nombre}</Text>
-        <Text style={styles.contactoTelefono}>{telefono}</Text>
+        <Text style={styles.contactoTelefono}>{celular}</Text>
+        {/* Mostrar la relación solo si existe y no es una cadena vacía */}
+        {relacion && relacion.trim() !== "" && (
+          <Text style={styles.contactoTelefono}>{relacion}</Text>
+        )}
       </View>
       <TouchableOpacity onPress={llamarContacto} style={styles.botonLlamar}>
         <Ionicons name="call-outline" size={24} color="white" />
@@ -34,34 +45,34 @@ const ContactoItem: React.FC<ContactoItemProps> = ({ nombre, telefono, onElimina
 
 const styles = StyleSheet.create({
   contactoContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 15,
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 10,
+    backgroundColor: "#fff",
     borderRadius: 5,
     marginBottom: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
   },
   contactoNombre: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   contactoTelefono: {
     fontSize: 16,
-    color: '#888',
+    color: "#888",
   },
   botonEliminar: {
-    backgroundColor: '#ff6961',
+    backgroundColor: "#ff6961",
     padding: 10,
     borderRadius: 5,
   },
   botonLlamar: {
     padding: 10,
     borderRadius: 5,
-    backgroundColor: 'green',
+    backgroundColor: "green",
     marginLeft: 130,
   },
 });
