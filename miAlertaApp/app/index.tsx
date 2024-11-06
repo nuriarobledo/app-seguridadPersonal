@@ -11,12 +11,16 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../assets/types";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { ThemedInput } from "@/components/ThemedInput";
+
 //componentes
 import HuellaAutenticacion from "../components/login/HuellaAutenticacion";
-
+import validarDataLogin from "@/components/validaciones/validarDataLogin";
 //firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
-
+import { auth } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //data
@@ -33,36 +37,56 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [pin, setPin] = useState("");
 
-  const handleLogin = () => {
-    // Credenciales hardcodeadas
-    const hardcodedEmail = "usuario@example.com";
-    const hardcodedPin = "1234";
+  const handleLogin = async () => {
+    if (!validarDataLogin(email, pin)) {
+      Alert.alert("Error", "Por favor completa todos los campos.");
+      return;
+    }
 
-    if (email === hardcodedEmail && pin === hardcodedPin) {
-      // Navegar a la pantalla de inicio
+    try {
+      //Firebase
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        pin
+      );
+      const firebaseId = userCredential.user.uid; // Obtiene el ID de Firebase
+      const token = await userCredential.user.getIdToken(); //token JWT
+
+      // almaceno token
+      await AsyncStorage.setItem("userToken", token);
+
+      // Obtiene el usuario de la base de datos local usando el firebaseId
+      const user = await getUserByFirebaseId(firebaseId);
+
+      if (user) {
+        await AsyncStorage.setItem("userId", user.id.toString());
+        console.log("Usuario recuperado:", user);
+      } else {
+        console.warn("No se encontró el usuario en la base de datos local");
+      }
       navigation.navigate("(tabs)");
-    } else {
-      // Mostrar un mensaje de error
-      Alert.alert("Error", "Usuario o PIN incorrectos");
+    } catch (error) {
+      Alert.alert(
+        "Error, la combinación de usuario y contraseña es incorrecta",
+        (error as Error).message
+      );
     }
   };
-
   const handleRegistro = () => {
     navigation.navigate("registro");
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Iniciar Sesión</Text>
-      <TextInput
-        style={styles.input}
+    <ThemedView style={styles.container}>
+      <ThemedText style={styles.title}>Iniciar Sesión</ThemedText>
+      <ThemedInput
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
       />
-      <TextInput
-        style={styles.input}
+      <ThemedInput
         placeholder="PIN"
         value={pin}
         onChangeText={setPin}
@@ -72,17 +96,17 @@ const Login = () => {
 
       {/* Botón de olvidé pin */}
       <TouchableOpacity onPress={handleRegistro}>
-        <Text style={styles.buttonRestaurarPin}>Olvidé mi pin</Text>
+        <ThemedText style={styles.buttonRestaurarPin}>Olvidé mi pin</ThemedText>
       </TouchableOpacity>
 
       {/* Botón de inicio de sesión */}
       <TouchableOpacity style={styles.buttonLogin} onPress={handleLogin}>
-        <Text style={styles.buttonTextWhite}>Iniciar Sesión</Text>
+        <ThemedText style={styles.buttonTextWhite}>Iniciar Sesión</ThemedText>
       </TouchableOpacity>
 
       {/* Botón de registro */}
       <TouchableOpacity onPress={handleRegistro}>
-        <Text style={styles.buttonRegistro}>Registrarme</Text>
+        <ThemedText style={styles.buttonRegistro}>Registrarme</ThemedText>
       </TouchableOpacity>
 
       {/* Botón de inicio con huella */}
@@ -91,9 +115,9 @@ const Login = () => {
         onPress={() => HuellaAutenticacion(navigation)}
       >
         <Ionicons name="finger-print" size={24} color="black" />
-        <Text style={styles.buttonTextBlack}>Iniciar con huella</Text>
+        <ThemedText style={styles.buttonTextBlack}>Iniciar con huella</ThemedText>
       </TouchableOpacity>
-    </View>
+    </ThemedView>
   );
 };
 
