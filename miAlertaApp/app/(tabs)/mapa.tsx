@@ -22,6 +22,7 @@ export default function Mapa() {
   const [lugares, setLugares] = useState<Lugar[]>([]);
   const [region, setRegion] = useState<Region | null>(null);
   const [ubicacionActual, setUbicacionActual] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [lugarSeleccionado, setLugarSeleccionado] = useState<Lugar | null>(null);
 
   useEffect(() => {
     const obtenerUbicacion = async () => {
@@ -52,7 +53,7 @@ export default function Mapa() {
   }, []);
 
   const obtenerLugaresCercanos = async (lat: number, lon: number) => {
-    const categorias = ['hospital', 'policia'];
+    const categorias = ['hospital', 'policia', 'bomberos', 'clinica', 'salud', 'urgencia', 'comisaria', 'sanatorio'];
     try {
       const lugaresEncontrados = await Promise.all(
         categorias.map(categoria => buscarLugaresCercanos(lat, lon, categoria))
@@ -62,6 +63,8 @@ export default function Mapa() {
       //filtra lugares cercanos
       const lugaresFiltrados = lugaresUnidos.filter(lugar => lugar.lat && lugar.lon && estaCerca(lat, lon, parseFloat(lugar.lat), parseFloat(lugar.lon)));
       setLugares(lugaresFiltrados);
+
+      console.log('Lugares filtrados:', lugaresFiltrados);
     } catch (error) {
       console.error("Error al obtener lugares cercanos:", error);
     }
@@ -117,33 +120,69 @@ export default function Mapa() {
     return distancia <= distanciaMaxima; // true si esta dentro del rango
   };
 
+  //funcion para obtener el color del pin segun el lugar
+  const obtenerColorPin = (displayName: string) => {
+    if (
+      displayName.toLowerCase().includes("policía") || 
+      displayName.toLowerCase().includes("comisaría")) {
+      return "blue";
+    } else if (
+      displayName.toLowerCase().includes("hospital") ||
+      displayName.toLowerCase().includes("sanatorio") ||
+      displayName.toLowerCase().includes("clinica") ||
+      displayName.toLowerCase().includes("salud") ||
+      displayName.toLowerCase().includes("urgencia")
+    ) {
+      return "green";
+    }
+    return "yellow"; 
+  };
+
+  const manejarSeleccionMarcador = (lugar: Lugar) => {
+    setLugarSeleccionado(lugar);
+  };
+
   return (
-    <View style={StyleSheet.absoluteFillObject}>
-      {region ? ( // muestra el mapa si la region esta definida
-        <MapView
-          style={StyleSheet.absoluteFillObject}
-          region={region}
-        >
-          {/* Marcador para la ubicación actual */}
-          {ubicacionActual && (
-            <Marker
-              coordinate={ubicacionActual}
-              title="Tu Ubicación"
-              pinColor="blue" 
-            />
+    <View style={{ flex: 1 }}>
+      <Text style={styles.titulo}>Presione un Pin para obtener más información</Text>
+      {region ? (
+        <View style={styles.mapContainer}>
+          <MapView
+            style={styles.map}
+            region={region}
+          >
+            {/* Marcador para la ubicación actual */}
+            {ubicacionActual && (
+              <Marker
+                coordinate={ubicacionActual}
+                title="Tu Ubicación"
+                pinColor="red"
+              />
+            )}
+            {/* Marcadores para los lugares cercanos */}
+            {lugares.map((lugar, index) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: parseFloat(lugar.lat),
+                  longitude: parseFloat(lugar.lon),
+                }}
+                title={lugar.display_name}
+                pinColor={obtenerColorPin(lugar.display_name)}
+                onPress={() => manejarSeleccionMarcador(lugar)}
+              />
+            ))}
+          </MapView>
+          
+          {/* Mostrar información del lugar seleccionado */}
+          {lugarSeleccionado && (
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoTitle}>{lugarSeleccionado.display_name}</Text>
+              <Text>Latitud: {lugarSeleccionado.lat}</Text>
+              <Text>Longitud: {lugarSeleccionado.lon}</Text>
+            </View>
           )}
-          {/* Marcadores para los lugares cercanos */}
-          {lugares.map((lugar, index) => (
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: parseFloat(lugar.lat),
-                longitude: parseFloat(lugar.lon),
-              }}
-              title={lugar.display_name}
-            />
-          ))}
-        </MapView>
+        </View>
       ) : (
         <View style={styles.loadingContainer}>
           <Text>Cargando mapa...</Text>
@@ -159,4 +198,48 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  mapContainer: {
+    flex: 1,
+    marginTop: 20,
+    borderColor: 'red',
+    borderWidth: 2,
+    borderRadius: 10,
+  },
+  map: {
+    flex: 1,
+    borderRadius: 10,
+  },
+  titulo: {
+    fontSize: 20, 
+    fontWeight: 'bold', 
+    padding: 10,
+    textAlign: 'center',
+    color: '#FFFFFF', 
+    marginTop: 80,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
+    shadowColor: '#000', 
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5, 
+  },
+  
+ infoContainer:{
+   position:'absolute',
+   bottom:'10%',
+   left:'5%',
+   right:'5%',
+   backgroundColor:'rgba(255,255,255,0.8)',
+   paddingVertical:'5%',
+   paddingHorizontal:'5%',
+   borderRadius: 10,
+   elevation:5
+ },
+ infoTitle:{
+   fontSize:18,
+   fontWeight:'bold'
+ }
 });
