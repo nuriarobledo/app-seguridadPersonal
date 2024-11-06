@@ -25,7 +25,7 @@ const ContactoItem = ({
 
   return (
     <View style={styles.contactoContainer}>
-      <View>
+      <View style={styles.infoContainer}>
         <Text style={styles.contactoNombre}>{nombre}</Text>
         <Text style={styles.contactoTelefono}>{celular}</Text>
         {/* Mostrar la relación solo si existe y no es una cadena vacía */}
@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
   contactoContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    padding: 10,
+    alignItems: "center", 
+    padding: 15,
     backgroundColor: "#fff",
     borderRadius: 5,
     marginBottom: 10,
@@ -55,6 +56,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+    height: 80, 
+  },
+  infoContainer: {
+    flex: 1, 
+    marginRight: 10, 
   },
   contactoNombre: {
     fontSize: 18,
@@ -68,12 +74,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#ff6961",
     padding: 10,
     borderRadius: 5,
+    marginLeft: 5,
   },
   botonLlamar: {
     padding: 10,
     borderRadius: 5,
     backgroundColor: "green",
-    marginLeft: 130,
   },
 });
 
