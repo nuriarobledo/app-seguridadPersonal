@@ -29,6 +29,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
+         {/* Pantalla de inicio de sesión */}
+         <Stack.Screen name="index" options={{ headerShown: false }} />
+         {/* pestanas */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
