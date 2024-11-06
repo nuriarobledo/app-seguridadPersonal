@@ -37,8 +37,8 @@ export const initializeDatabase = async () => {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           idUsuario INTEGER NOT NULL,
           nombre TEXT NOT NULL,
-          celular INTEGER NOT NULL,
-          relacion TEXT NOT NULL,
+          celular TEXT NOT NULL,
+          relacion TEXT,
           FOREIGN KEY (idUsuario) REFERENCES Usuario(id)
           );`
     );
@@ -95,7 +95,7 @@ initializeDatabase();
 //---------------- FUNCIONES -----------------
 // Obtener todos los usuarios
 //Usuarios
-type Usuario = {
+export type Usuario = {
   id: number;
   nombre: string;
   email: string;
@@ -172,5 +172,75 @@ export const getUserByFirebaseId = async (
   } catch (error) {
     console.error("Error al obtener el usuario por Firebase ID:", error);
     return null;
+  }
+};
+
+
+// CONTACTO EMERGENCIA
+//Usuarios
+export type ContactoEmergencia = {
+  id: number;
+  idUsuario: number;
+  nombre: string;
+  celular: string;
+  relacion?: string;
+};
+// agregar contacto
+export const getContactoEmergenciaByIdUser = async (idUsuario: number): Promise<ContactoEmergencia[]> => {
+  const database = await db;
+  try {
+    const result = await database.getAllAsync(
+      "SELECT * FROM ContactoEmergencia WHERE idUsuario = ?",
+      [idUsuario]
+    );
+
+    // Verifica que result sea un arreglo y cada elemento sea del tipo Habit
+    if (Array.isArray(result)) {
+      return result.map((item) => item as ContactoEmergencia);
+    } else {
+      console.warn("Se esperaba un arreglo, pero se obtuvo:", result);
+      return []; // Devuelve un arreglo vacío si no es un arreglo
+    }
+  } catch (error) {
+    console.error("Error al obtener los hábitos:", error);
+    return []; // Devuelve un arreglo vacío en caso de error
+  }
+};
+
+export const addContactoEmergencia = async (
+  idUsuario: number,
+  nombre: string,
+  celular: string,
+  relacion?: string,
+): Promise<boolean> => {
+  const database = await db;
+
+  try {
+    await database.runAsync(
+      "INSERT INTO ContactoEmergencia (idUsuario, nombre, celular, relacion) VALUES (?, ?, ?, ?)",
+      [idUsuario, nombre, celular, relacion || ""]
+    );
+    console.log("Contacto de emergencia agregado con éxito");
+    return true; // Devuelve true si se agrega correctamente
+  } catch (error) {
+    console.error("Error al agregar el contacto de emergencia:", error);
+    return false; // Devuelve false si hay un error
+  }
+};
+
+export const deleteContactoEmergencia = async (id: number): Promise<boolean> => {
+  const database = await db;
+
+  try {
+    // Eliminar el contacto de emergencia con el id proporcionado
+    await database.runAsync(
+      "DELETE FROM ContactoEmergencia WHERE id = ?",
+      [id]
+    );
+    console.log("Contacto de emergencia eliminado con éxito");
+    return true; // Devuelve true si se elimina correctamente
+  } catch (error) {
+    console.error("Error al eliminar el contacto de emergencia:", error);
+    return false; // Devuelve false si hay un error
   }
 };
