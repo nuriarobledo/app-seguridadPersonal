@@ -1,41 +1,79 @@
-import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, TextInput, Button, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface AgregarContactoProps {
-  agregarContacto: (nombre: string, telefono: string) => void;
-}
+//data
+import { addContactoEmergencia } from '../../database/database'; 
 
-const AgregarContacto: React.FC<AgregarContactoProps> = ({ agregarContacto }) => {
-  const [nombre, setNombre] = useState<string>('');
-  const [telefono, setTelefono] = useState<string>('');
+const AgregarContacto = ( ) => {
+  const [nombre, setNombre] = useState("");
+  const [celular, setCelular] = useState("");
+  const [relacion, setRelacion] = useState("");
+  const [idUsuario, setIdUsuario] = useState<number | null>(null);
 
-  const handleAgregarContacto = () => {
-    if (nombre && telefono){
-    agregarContacto(nombre, telefono);
-    setNombre('');
-    setTelefono('');
-  }
+
+  //obtengo ID del usuario del AsyncStorage
+  useEffect(() => {
+    const fetchIdUsuario = async () => {
+      try {
+        const id = await AsyncStorage.getItem("userId");
+        if (id !== null) {
+          console.log("ID del usuario:", id);
+          setIdUsuario(Number(id)); // Asegúrate de convertirlo a número si es necesario
+        }
+      } catch (error) {
+        console.error("Error al obtener el idUsuario:", error);
+      }
+    };
+
+    fetchIdUsuario();
+  }, []);
+
+  const handleAgregarContacto = async () => {
+    if (nombre && celular && idUsuario !== null) {
+      const result = await addContactoEmergencia(idUsuario, nombre, celular, relacion);
+      if (result) {
+        console.log("Contacto agregado exitosamente");
+      } else {
+        console.error("Error al agregar el contacto");
+      }
+      // Limpiar los campos después de agregar
+      setNombre("");
+      setCelular("");
+      setRelacion("");
+    } else {
+      console.error("Faltan datos necesarios");
+    }
   };
 
   return (
     <View style={styles.container}>
-        <>
-          <TextInput
-            style={styles.input}
-            placeholder="Nombre"
-            value={nombre}
-            onChangeText={setNombre}
-            placeholderTextColor="#A9A9A9"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Teléfono"
-            value={telefono}
-            onChangeText={setTelefono}
-            placeholderTextColor="#A9A9A9"
-          />
-          <Button title="Agregar" onPress={handleAgregarContacto} color="#4fdf57"/>
-        </>
+      <TextInput
+        style={styles.input}
+        placeholder="Nombre"
+        value={nombre}
+        onChangeText={setNombre}
+        placeholderTextColor="#A9A9A9"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Celular"
+        value={celular}
+        onChangeText={setCelular}
+        placeholderTextColor="#A9A9A9"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Relación (opcional)"
+        value={relacion}
+        onChangeText={setRelacion}
+        placeholderTextColor="#A9A9A9"
+      />
+      <Button
+        title="Agregar"
+        onPress={handleAgregarContacto}
+        color="#4fdf57"
+      />
     </View>
   );
 };
@@ -46,10 +84,10 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
+    borderColor: "#ccc",
+    backgroundColor: "#fff",
     width: 300,
-    color: '#000',
+    color: "#000",
     padding: 10,
     marginBottom: 20,
     marginTop: 5,
