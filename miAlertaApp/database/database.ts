@@ -12,7 +12,6 @@ export const initializeDatabase = async () => {
 //     await database.execAsync(`DROP TABLE IF EXISTS UbicacionCompartida;`);
 //     await database.execAsync(`DROP TABLE IF EXISTS ContactoEmergencia;`);
 //     await database.execAsync(`DROP TABLE IF EXISTS Alerta;`);
-//     await database.execAsync(`DROP TABLE IF EXISTS AlertaContacto;`);
 //     await database.execAsync(`DROP TABLE IF EXISTS IntentoAutenticacion;`);
 
 //     console.log("Todas las tablas han sido eliminadas con éxito");
@@ -61,22 +60,13 @@ export const initializeDatabase = async () => {
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           idUsuario INTEGER NOT NULL,
           idUbicacionCompartida INTEGER NOT NULL,
+          idContactoEmergencia INTEGER NOT NULL,
           mensaje TEXT NOT NULL,
           FOREIGN KEY (idUsuario) REFERENCES Usuario(id),
-          FOREIGN KEY (idUbicacionCompartida) REFERENCES UbicacionCompartida(id)
-          );`
-    );
-
-    await database.execAsync(
-      `CREATE TABLE IF NOT EXISTS AlertaContacto (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          idAlerta INTEGER NOT NULL,
-          idContactoEmergencia INTEGER NOT NULL,
-          FOREIGN KEY (idAlerta) REFERENCES Alerta(id),
+          FOREIGN KEY (idUbicacionCompartida) REFERENCES UbicacionCompartida(id),
           FOREIGN KEY (idContactoEmergencia) REFERENCES ContactoEmergencia(id)
           );`
     );
-
     await database.execAsync(
       `CREATE TABLE IF NOT EXISTS IntentoAutenticacion (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
