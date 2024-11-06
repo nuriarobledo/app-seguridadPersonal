@@ -7,19 +7,19 @@ export const initializeDatabase = async () => {
   const database = await db;
 
   // Eliminar la bd
-  // try {
-    // await database.execAsync(`DROP TABLE IF EXISTS Usuario;`);
-  //   // await database.execAsync(`DROP TABLE IF EXISTS UbicacionCompartida;`);
-  //   await database.execAsync(`DROP TABLE IF EXISTS ContactoEmergencia;`);
-  //   //await database.execAsync(`DROP TABLE IF EXISTS Alerta;`);
-  //await database.execAsync(`DROP TABLE IF EXISTS AlertaContacto;`);
-  //await database.execAsync(`DROP TABLE IF EXISTS IntentoAutenticacion;`);
+//   try {
+//     await database.execAsync(`DROP TABLE IF EXISTS Usuario;`);
+//     await database.execAsync(`DROP TABLE IF EXISTS UbicacionCompartida;`);
+//     await database.execAsync(`DROP TABLE IF EXISTS ContactoEmergencia;`);
+//     await database.execAsync(`DROP TABLE IF EXISTS Alerta;`);
+//     await database.execAsync(`DROP TABLE IF EXISTS AlertaContacto;`);
+//     await database.execAsync(`DROP TABLE IF EXISTS IntentoAutenticacion;`);
 
-  //   console.log('Todas las tablas han sido eliminadas con éxito');
-  // } catch (error) {
-  //   console.error('Error al eliminar las tablas:', error);
-  // }
-  // };
+//     console.log("Todas las tablas han sido eliminadas con éxito");
+//   } catch (error) {
+//     console.error("Error al eliminar las tablas:", error);
+//   }
+// };
   try {
     await database.execAsync(
       `CREATE TABLE IF NOT EXISTS Usuario (
@@ -55,7 +55,7 @@ export const initializeDatabase = async () => {
         FOREIGN KEY (idContactoEmergencia) REFERENCES ContactoEmergencia(id)
       );`
     );
-   
+
     await database.execAsync(
       `CREATE TABLE IF NOT EXISTS Alerta (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
