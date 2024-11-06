@@ -59,9 +59,12 @@ const Login = () => {
       // Obtiene el usuario de la base de datos local usando el firebaseId
       const user = await getUserByFirebaseId(firebaseId);
 
-      if (user) {
+      if (user) { 
+        //almaceno en asyncStorage los datos del usuario
         await AsyncStorage.setItem("userId", user.id.toString());
+        await AsyncStorage.setItem("userName", user.nombre);
         console.log("Usuario recuperado:", user);
+
       } else {
         console.warn("No se encontró el usuario en la base de datos local");
       }
