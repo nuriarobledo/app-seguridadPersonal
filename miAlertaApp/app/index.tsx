@@ -11,9 +11,16 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../assets/types";
-
 //componentes
 import HuellaAutenticacion from "../components/login/HuellaAutenticacion";
+
+//firebase
+import { signInWithEmailAndPassword } from "firebase/auth";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+//data
+import { getUserByFirebaseId } from "@/database/database";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
