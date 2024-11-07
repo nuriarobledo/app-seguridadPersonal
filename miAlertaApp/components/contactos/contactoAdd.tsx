@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Button, StyleSheet } from "react-native";
+import { View, TextInput, Button, StyleSheet, Alert} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //data
@@ -35,6 +35,10 @@ const AgregarContacto = ({ onClose }: { onClose: () => void }) => {
       const result = await addContactoEmergencia(idUsuario, nombre, celular, relacion || undefined);
       if (result) {
         console.log("Contacto agregado exitosamente");
+
+        // Mostrar alerta de éxito
+        Alert.alert("Éxito", "Contacto creado con éxito", [{ text: "OK", onPress: () => console.log("OK Pressed") }]);
+
         onClose(); // Cierra el modal después de agregar
       } else {
         console.error("Error al agregar el contacto");
