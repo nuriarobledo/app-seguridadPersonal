@@ -9,8 +9,6 @@ import {
 import { useState, useEffect } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Collapsible } from "@/components/Collapsible";
-import { ExternalLink } from "@/components/ExternalLink";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
@@ -22,6 +20,12 @@ import AgregarContacto from "@/components/contactos/contactoAdd";
 export default function ContactosEmergenciaScreen() {
   //modal para agregar contacto
   const [modalVisible, setModalVisible] = useState(false);
+
+  // Función para cerrar el modal y recargar los contactos
+  const handleCloseModal = () => {
+    setModalVisible(false);
+   
+  };
 
   return (
     <ParallaxScrollView
@@ -52,7 +56,7 @@ export default function ContactosEmergenciaScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <AgregarContacto />
+            <AgregarContacto onClose={handleCloseModal}/>
 
             <TouchableOpacity
               onPress={() => setModalVisible(false)}

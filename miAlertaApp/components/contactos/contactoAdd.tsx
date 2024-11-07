@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //data
 import { addContactoEmergencia } from '../../database/database'; 
 
-const AgregarContacto = ( ) => {
+const AgregarContacto = ({ onClose }: { onClose: () => void }) => {
   const [nombre, setNombre] = useState("");
   const [celular, setCelular] = useState("");
   const [relacion, setRelacion] = useState("");
@@ -19,7 +19,7 @@ const AgregarContacto = ( ) => {
         const id = await AsyncStorage.getItem("userId");
         if (id !== null) {
           console.log("ID del usuario:", id);
-          setIdUsuario(Number(id)); // Asegúrate de convertirlo a número si es necesario
+          setIdUsuario(Number(id)); 
         }
       } catch (error) {
         console.error("Error al obtener el idUsuario:", error);
@@ -35,6 +35,7 @@ const AgregarContacto = ( ) => {
       const result = await addContactoEmergencia(idUsuario, nombre, celular, relacion || undefined);
       if (result) {
         console.log("Contacto agregado exitosamente");
+        onClose(); // Cierra el modal después de agregar
       } else {
         console.error("Error al agregar el contacto");
       }
