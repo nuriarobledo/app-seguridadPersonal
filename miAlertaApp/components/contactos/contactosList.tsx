@@ -19,6 +19,7 @@ import {
   ContactoEmergencia,
   getContactoEmergenciaByIdUser,
   deleteContactoEmergencia,
+  updateContactoPredeterminado,
 } from "../../database/database";
 
 export default function ContactosList({}) {
@@ -52,6 +53,16 @@ export default function ContactosList({}) {
     obtenerContactosEmergencia();
   }, []);
 
+  // Función para marcar un contacto como predeterminado
+  const marcarComoPredeterminado = async (id: number) => {
+    try {
+      await updateContactoPredeterminado(true, id); // Marcar este contacto como predeterminado
+      console.log(`Contacto ${id} marcado como predeterminado`);
+    } catch (error) {
+      console.error("Error al marcar el contacto como predeterminado:", error);
+    }
+  };
+
   // Función para eliminar un contacto
   const eliminarContacto = async (id: number) => {
     try {
@@ -84,8 +95,10 @@ export default function ContactosList({}) {
             key={item.id}
             nombre={item.nombre}
             celular={item.celular}
-            relacion={item.relacion? item.relacion : ""}
+            relacion={item.relacion ? item.relacion : ""}
+            esPredeterminado={item.esPredeterminado}
             onEliminar={() => eliminarContacto(item.id)}
+            onMarkAsDefault={() => marcarComoPredeterminado(item.id)}
             id={item.id}
             idUsuario={idUsuario!}
           />
