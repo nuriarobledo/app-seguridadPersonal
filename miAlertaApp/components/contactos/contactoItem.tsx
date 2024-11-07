@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Linking,
+  Alert
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { AntDesign } from "@expo/vector-icons";
@@ -28,11 +29,17 @@ const ContactoItem = ({
     Linking.openURL(`tel:${celular}`);
   };
 
+  // Función para manejar el marcado como predeterminado
+  const handleMarkAsDefault = () => {
+    onMarkAsDefault(); // Llama a la función pasada como prop
+    Alert.alert("Éxito", `Contacto ${nombre} es el seleccionado como predeterminado para enviar las alertas`, [{ text: "OK" }]);
+  };
+
   return (
     <View>
       <TouchableOpacity
         style={styles.contactoContainer}
-        onLongPress={onMarkAsDefault} // Detectar mantenimiento de presión
+       onLongPress={handleMarkAsDefault}
       >
         <View style={styles.infoContainer}>
           <Text style={styles.contactoNombre}>{nombre}</Text>
