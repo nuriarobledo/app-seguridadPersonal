@@ -38,6 +38,7 @@ export const initializeDatabase = async () => {
           nombre TEXT NOT NULL,
           celular TEXT NOT NULL,
           relacion TEXT,
+          esPredeterminado BOOLEAN NOT NULL DEFAULT 0,
           FOREIGN KEY (idUsuario) REFERENCES Usuario(id)
           );`
     );
@@ -174,6 +175,7 @@ export type ContactoEmergencia = {
   nombre: string;
   celular: string;
   relacion?: string;
+  esPredeterminado: boolean;
 };
 // agregar contacto
 export const getContactoEmergenciaByIdUser = async (idUsuario: number): Promise<ContactoEmergencia[]> => {
@@ -232,5 +234,28 @@ export const deleteContactoEmergencia = async (id: number): Promise<boolean> => 
   } catch (error) {
     console.error("Error al eliminar el contacto de emergencia:", error);
     return false; // Devuelve false si hay un error
+  }
+};
+
+export const updateContactoPredeterminado = async (esPredeterminado: boolean, id: number) => {
+  const database = await db; 
+  try {
+    if (esPredeterminado) {
+      // Si se está marcando un contacto como predeterminado
+      // Primero, desmarcar todos los demás contactos como predeterminados
+      await database.runAsync(
+        "UPDATE ContactoEmergencia SET esPredeterminado = 0 WHERE esPredeterminado = 1"
+      );
+    }
+
+    // Luego, actualizar el contacto específico
+    await database.runAsync(
+      "UPDATE ContactoEmergencia SET esPredeterminado = ? WHERE id = ?",
+      [esPredeterminado ? 1 : 0, id] // Establecer el estado del contacto actual
+    );
+
+  } catch (error) {
+    console.error("Error al actualizar el contacto:", error);
+    throw error; // Lanza el error para manejarlo en la función principal
   }
 };
