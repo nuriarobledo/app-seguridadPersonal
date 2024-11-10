@@ -11,6 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //expo para msj
 import * as SMS from "expo-sms";
+import * as Location from "expo-location";
 
 //data
 import {
@@ -94,10 +95,20 @@ export const EmergencyButton = () => {
       (contacto) => contacto.esPredeterminado
     );
     console.log("celular", contactoPredeterminado?.celular);
+
     if (isAvailable && contactoPredeterminado) {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permiso de ubicación denegado");
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({});
+      const locationUrl = `https://www.google.com/maps?q=${location.coords.latitude},${location.coords.longitude}`;
+
+
       const { result } = await SMS.sendSMSAsync(
         [contactoPredeterminado.celular],
-        "¡Emergencia! Necesito ayuda. Por favor, comunícate conmigo lo antes posible."
+        `¡Emergencia! Necesito ayuda. Por favor, comunícate conmigo lo antes posible. Mi ubicación actual es: ${locationUrl}`
       );
       if (result === "sent" || result === "cancelled") {
         setTimeout(() => {
