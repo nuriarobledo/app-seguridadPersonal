@@ -1,0 +1,23 @@
+Comandos a utilizar:
+
+- showUserLocation Si es verdadero, la ubicación de los usuarios se mostrará en el mapa. 
+NOTA: Necesita permisos de ubicación en tiempo de ejecución antes de configurar esto como verdadero; 
+de lo contrario, fallará silenciosamente. Consulte el excelente react-native-permissions para esto.
+
+-userLocationPriority: Establezca la prioridad de potencia del seguimiento de la ubicación del usuario. 
+Consulte la documentación de las API de Google. 
+Nota: solo para Android.
+
+-showsMyLocationButton: Si es verdadero lo muestra
+
+-showsPointsOfInterest: Muestra los puntos de interes si es verdadero.
+
+-followsUserLocation: Si es verdadero, el mapa se centrará en la ubicación del usuario. 
+Esto solo funciona si showsUserLocation es verdadero y el usuario ha compartido su ubicación. 
+Nota: solo Apple Maps. (verificar)
+
+-zoomEnabled: True para que pueda hacer zoom
+
+-npx expo install expo-location
+
+useEffect(() => { ... }, []);
