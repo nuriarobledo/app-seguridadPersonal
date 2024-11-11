@@ -22,6 +22,7 @@ import validarDataLogin from "@/components/validaciones/validarDataLogin";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as LocalAuthentication from "expo-local-authentication";
 
 //data
 import { getUserByFirebaseId } from "@/database/database";
@@ -44,31 +45,35 @@ const Login = () => {
     }
 
     try {
-      //Firebase
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        pin
-      );
-      const firebaseId = userCredential.user.uid; // Obtiene el ID de Firebase
-      const token = await userCredential.user.getIdToken(); //token JWT
-
-      // almaceno token
+      const userCredential = await signInWithEmailAndPassword(auth, email, pin);
+      const firebaseId = userCredential.user.uid;
+      const token = await userCredential.user.getIdToken();
+  
       await AsyncStorage.setItem("userToken", token);
-
-      // Obtiene el usuario de la base de datos local usando el firebaseId
       const user = await getUserByFirebaseId(firebaseId);
-
-      if (user) { 
-        //almaceno en asyncStorage los datos del usuario
+  
+      if (user) {
         await AsyncStorage.setItem("userId", user.id.toString());
-        await AsyncStorage.setItem("userName", user.nombre);
-        console.log("Usuario recuperado:", user);
-
+  
+        // Verificar si el usuario desea configurar la autenticación biométrica
+        const hasBiometricAuth = await AsyncStorage.getItem("hasBiometricAuth");
+  
+        if (!hasBiometricAuth) {
+          // Si no está configurada, pide que configure la huella
+          const setupBiometric = await LocalAuthentication.authenticateAsync({
+            promptMessage: "Configurar autenticación biométrica",
+          });
+  
+          if (setupBiometric.success) {
+            await AsyncStorage.setItem("hasBiometricAuth", "true");
+            Alert.alert("Éxito", "Autenticación biométrica configurada.");
+          }
+        }
+  
+        navigation.navigate("(tabs)");
       } else {
         console.warn("No se encontró el usuario en la base de datos local");
       }
-      navigation.navigate("(tabs)");
     } catch (error) {
       Alert.alert(
         "Error, la combinación de usuario y contraseña es incorrecta",
@@ -76,8 +81,20 @@ const Login = () => {
       );
     }
   };
+
   const handleRegistro = () => {
     navigation.navigate("registro");
+  };
+
+  // inicio de sesion con huella si esta configurada
+  const handleBiometricLogin = async () => {
+    const hasBiometricAuth = await AsyncStorage.getItem("hasBiometricAuth");
+
+    if (hasBiometricAuth) {
+      await HuellaAutenticacion(navigation);
+    } else {
+      Alert.alert("Error", "Primero debe configurar la autenticación biométrica iniciando sesión con su PIN.");
+    }
   };
 
   return (
@@ -115,7 +132,7 @@ const Login = () => {
       {/* Botón de inicio con huella */}
       <TouchableOpacity
         style={styles.buttonHuella}
-        onPress={() => HuellaAutenticacion(navigation)}
+        onPress={handleBiometricLogin}
       >
         <Ionicons name="finger-print" size={24} color="black" />
         <ThemedText style={styles.buttonTextBlack}>Iniciar con huella</ThemedText>
