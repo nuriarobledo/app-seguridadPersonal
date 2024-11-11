@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 //data
 import { addContactoEmergencia } from '../../database/database'; 
 
-const AgregarContacto = ({ onClose }: { onClose: () => void }) => {
+const AgregarContacto = ({ onClose, onContactAdded }: { onClose: () => void; onContactAdded: () => void }) => {
   const [nombre, setNombre] = useState("");
   const [celular, setCelular] = useState("");
   const [relacion, setRelacion] = useState("");
@@ -38,6 +38,8 @@ const AgregarContacto = ({ onClose }: { onClose: () => void }) => {
 
         // Mostrar alerta de éxito
         Alert.alert("Éxito", "Contacto creado con éxito", [{ text: "OK", onPress: () => console.log("OK Pressed") }]);
+
+        onContactAdded(); //notifica al padre que se agrego un contacto nuevo
 
         onClose(); // Cierra el modal después de agregar
       } else {
