@@ -13,6 +13,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedInput } from "@/components/ThemedInput";
+import ThemedIcon from "@/components/ThemedIcon";
 import { RootStackParamList } from "../assets/types";
 import * as LocalAuthentication from "expo-local-authentication";
 import SHA256 from "crypto-js/sha256";
@@ -134,8 +135,8 @@ const Registro = () => {
           style={styles.buttonHuella}
           onPress={() => handleRegistroBiometrico(navigation)}
         >
-          <Ionicons name="finger-print" size={24} color="black" />
-          <ThemedText style={styles.buttonTextBlack}>Registrar Huella Dactilar</ThemedText>
+          <ThemedIcon name="finger-print" size={24} />
+          <ThemedText>Registrar Huella Dactilar</ThemedText>
         </TouchableOpacity>
       )}
 
