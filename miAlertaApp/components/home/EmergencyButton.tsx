@@ -8,6 +8,7 @@ import {
   AppState,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ThemedText } from "../ThemedText";
 
 //expo para msj
 import * as SMS from "expo-sms";
@@ -18,6 +19,7 @@ import {
   ContactoEmergencia,
   getContactoEmergenciaByIdUser,
 } from "../../database/database";
+
 
 export const EmergencyButton = () => {
   const [emergenciaPresionada, setEmergenciaPresionada] = useState(false);
@@ -153,11 +155,11 @@ export const EmergencyButton = () => {
         </Pressable>
       ) : (
         <View style={styles.countdownContainer}>
-          <Text style={styles.countdownText}>
+          <ThemedText style={styles.countdownText}>
             Enviando alerta a{" "}
             {listado.find((contacto) => contacto.esPredeterminado)?.nombre} en{" "}
             {countdown}...
-          </Text>
+          </ThemedText>
 
           <Pressable style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.cancelButtonText}>Cancelar</Text>
@@ -190,12 +192,11 @@ const styles = StyleSheet.create({
   countdownContainer: {
     alignItems: "center",
     paddingVertical: 20,
-    width: "60%",
+    width: "70%",
   },
   countdownText: {
-    fontSize: 28,
-    color: "white",
-    marginBottom: 20,
+    fontSize: 24,
+    marginBottom: 30,
   },
   cancelButton: {
     backgroundColor: "red",
