@@ -18,6 +18,7 @@ import {
   getContactoEmergenciaByIdUser,
 } from "../../database/database";
 
+
 export const EmergencyButton = () => {
   const [emergenciaPresionada, setEmergenciaPresionada] = useState(false);
   const [countdown, setCountdown] = useState(3);
