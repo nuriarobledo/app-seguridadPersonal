@@ -99,6 +99,19 @@ const Login = () => {
     }
   };
 
+  useEffect(() => {
+    const checkUser = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        // si no hay usuario elimina la huella guardada
+        await AsyncStorage.removeItem("hasBiometricAuth");
+        navigation.navigate("index");
+      }
+    };
+
+    checkUser();
+  }, []);
+
   return (
     <ThemedView style={styles.container}>
       <ThemedText style={styles.title}>Iniciar Sesión</ThemedText>
