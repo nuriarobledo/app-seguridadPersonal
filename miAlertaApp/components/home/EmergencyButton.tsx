@@ -6,10 +6,9 @@ import {
   View,
   Alert,
   AppState,
+  Animated,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-//expo para msj
 import * as SMS from "expo-sms";
 import * as Location from "expo-location";
 
@@ -23,10 +22,11 @@ export const EmergencyButton = () => {
   const [emergenciaPresionada, setEmergenciaPresionada] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [timerActive, setTimerActive] = useState(false);
-  const [listado, setListadoContactoEmergencia] = useState<
-    ContactoEmergencia[]
-  >([]); // almacena los contactos
+  const [listado, setListadoContactoEmergencia] = useState<ContactoEmergencia[]>([]); 
   const [idUsuario, setIdUsuario] = useState<number | null>(null);
+  
+  // "pulsacion""
+  const pulseAnim = useState(new Animated.Value(1))[0];
 
   // Función para obtener contactos de emergencia
   const obtenerContactosEmergencia = async () => {
@@ -34,11 +34,10 @@ export const EmergencyButton = () => {
       const id = await AsyncStorage.getItem("userId");
       if (id !== null) {
         setIdUsuario(Number(id));
-        // Usa el firebaseId para obtener los hábitos
         const listado = await getContactoEmergenciaByIdUser(Number(id));
         console.log("Listado de contacto de emergencia obtenidos:", listado);
         if (listado && listado.length > 0) {
-          setListadoContactoEmergencia(listado); // Establece los hábitos
+          setListadoContactoEmergencia(listado);
         } else {
           console.warn("No existen contactos de emergencia para este usuario");
         }
@@ -76,21 +75,41 @@ export const EmergencyButton = () => {
   };
 
   useEffect(() => {
-    obtenerContactosEmergencia(); // Obtener contactos al montar el componente
-    manejarEstadoApp(); // Manejar estado de la app
+    obtenerContactosEmergencia();
+    manejarEstadoApp();
+    manejarTemporizador();
 
-    return manejarTemporizador(); // Manejar temporizador
-  }, [timerActive, countdown]);
+    if (emergenciaPresionada) {
+      // animacion de latido
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.2,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    }
+
+    return () => {
+      if (timerActive) clearTimeout(Number(timerActive));
+    };
+  }, [timerActive, countdown, emergenciaPresionada]);
 
   const handleAppStateChange = (nextAppState: string) => {
     if (nextAppState === "inactive" || nextAppState === "background") {
-      resetButton(); // Resetea el botón si la app pierde foco
+      resetButton();
     }
   };
 
   const handleEmergencyAction = async () => {
     const isAvailable = await SMS.isAvailableAsync();
-    // Busca el contacto predeterminado
     const contactoPredeterminado = listado.find(
       (contacto) => contacto.esPredeterminado
     );
@@ -105,14 +124,13 @@ export const EmergencyButton = () => {
       const location = await Location.getCurrentPositionAsync({});
       const locationUrl = `https://www.google.com/maps?q=${location.coords.latitude},${location.coords.longitude}`;
 
-
       const { result } = await SMS.sendSMSAsync(
         [contactoPredeterminado.celular],
         `¡Emergencia! Necesito ayuda. Por favor, comunícate conmigo lo antes posible. Mi ubicación actual es: ${locationUrl}`
       );
       if (result === "sent" || result === "cancelled") {
         setTimeout(() => {
-          resetButton(); // Resetear estado después de un breve delay
+          resetButton();
         }, 500);
       }
     } else {
@@ -130,18 +148,19 @@ export const EmergencyButton = () => {
   const handlePress = () => {
     setEmergenciaPresionada(true);
     setTimerActive(true);
-    setCountdown(3); // Reinicia el contador
+    setCountdown(3);
   };
 
   const handleCancel = () => {
     setTimerActive(false);
     setEmergenciaPresionada(false);
-    setCountdown(3); // Reinicia el contador
+    setCountdown(3);
     console.log("Emergencia cancelada");
   };
+
   const resetButton = () => {
     setEmergenciaPresionada(false);
-    setCountdown(3); // Reinicia el contador
+    setCountdown(3);
     setTimerActive(false);
   };
 
@@ -152,17 +171,12 @@ export const EmergencyButton = () => {
           <Text style={styles.buttonText}>Emergencia</Text>
         </Pressable>
       ) : (
-        <View style={styles.countdownContainer}>
-          <Text style={styles.countdownText}>
-            Enviando alerta a{" "}
-            {listado.find((contacto) => contacto.esPredeterminado)?.nombre} en{" "}
-            {countdown}...
-          </Text>
-
+        <Animated.View style={[styles.emergencyButton, { transform: [{ scale: pulseAnim }] }]}>
+          <Text style={styles.countdownText}>{countdown}</Text>
           <Pressable style={styles.cancelButton} onPress={handleCancel}>
             <Text style={styles.cancelButtonText}>Cancelar</Text>
           </Pressable>
-        </View>
+        </Animated.View>
       )}
     </View>
   );
@@ -187,23 +201,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  countdownContainer: {
-    alignItems: "center",
-    paddingVertical: 20,
-    width: "60%",
-  },
   countdownText: {
     fontSize: 28,
     color: "white",
-    marginBottom: 20,
-  },
-  cancelButton: {
-    backgroundColor: "red",
-    padding: 10,
-    borderRadius: 10,
-  },
-  cancelButtonText: {
-    color: "white",
-    fontSize: 18,
-  },
+   },
+   cancelButton: {
+     backgroundColor: "red",
+     padding: 10,
+     borderRadius: 10,
+   },
+   cancelButtonText: {
+     color: "white",
+     fontSize: 18,
+   },
 });
