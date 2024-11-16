@@ -114,9 +114,15 @@ export const EmergencyButton = () => {
     const contactoPredeterminado = listado.find(
       (contacto) => contacto.esPredeterminado
     );
+
+    if (!contactoPredeterminado) {
+      Alert.alert("¡Advertencia!", "No tienes contactos de emergencia!");
+      resetButton(); 
+      return; 
+  }
     console.log("celular", contactoPredeterminado?.celular);
 
-    if (isAvailable && contactoPredeterminado) {
+    if (isAvailable) {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert.alert("Permiso de ubicación denegado");
