@@ -3,7 +3,8 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -58,11 +59,15 @@ export default function HomeScreen() {
       <ScrollView style={styles.scrollView}
       >
         <ThemedView style={styles.titleContainer}>
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Icon name="log-out-outline" size={30} color={"white"} />
-          </TouchableOpacity>
-          <ThemedText type="title" style={styles.title}>Bienvenido {userName}!</ThemedText>
-          <HelloWave />
+          <View style={styles.greetingContainer}>
+            {/* Saludo */}
+            <ThemedText type="title" style={styles.title}>Hola, {userName}!</ThemedText>
+            {/* Icono de Logout */}
+            <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+              <Icon name="log-out-outline" size={30} color={"white"} />
+            </TouchableOpacity>
+            
+          </View>
         </ThemedView>
 
         {/* Botón de Emergencia */}
@@ -73,17 +78,21 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   titleContainer: {
-    flexDirection: "column",
-    position: "relative",
-    padding: 25,
+    padding: 5,
+    marginBottom: 70,
+  },
+  greetingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', 
+    justifyContent: 'space-between',
+    width: '100%',
   },
   title: {
     fontSize: 24,
-    marginTop: 50,
-    marginBottom: 20,
-    fontWeight: "bold",
-    textAlign: "left",
   },
   stepContainer: {
     gap: 8,
@@ -96,14 +105,8 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
-  scrollView: {
-    paddingHorizontal: 0, 
-  },
   logoutButton: {
-    position: "absolute",
-    top: 10,
-    right: 0,
-    marginTop: 10,
+    marginLeft: 30,
   },
 
 });
