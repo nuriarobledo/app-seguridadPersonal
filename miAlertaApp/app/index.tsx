@@ -14,6 +14,7 @@ import { RootStackParamList } from "../assets/types";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedInput } from "@/components/ThemedInput";
+import  ThemedIcon  from "@/components/ThemedIcon";
 
 //componentes
 import HuellaAutenticacion from "../components/login/HuellaAutenticacion";
@@ -134,8 +135,8 @@ const Login = () => {
         style={styles.buttonHuella}
         onPress={handleBiometricLogin}
       >
-        <Ionicons name="finger-print" size={24} color="black" />
-        <ThemedText style={styles.buttonTextBlack}>Iniciar con huella</ThemedText>
+        <ThemedIcon name="finger-print" size={24} />
+        <ThemedText>Iniciar con huella</ThemedText>
       </TouchableOpacity>
     </ThemedView>
   );

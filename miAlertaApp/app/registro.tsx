@@ -13,6 +13,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedInput } from "@/components/ThemedInput";
+import ThemedIcon from "@/components/ThemedIcon";
 import { RootStackParamList } from "../assets/types";
 import SHA256 from "crypto-js/sha256";
 

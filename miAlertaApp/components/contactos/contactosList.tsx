@@ -17,40 +17,31 @@ import ContactoItem from "../contactos/contactoItem";
 //data
 import {
   ContactoEmergencia,
-  getContactoEmergenciaByIdUser,
   deleteContactoEmergencia,
   updateContactoPredeterminado,
 } from "../../database/database";
 
-export default function ContactosList({}) {
-  const [listado, setListadoContactoEmergencia] = useState<
-    ContactoEmergencia[]
-  >([]); // almacena los contactos
+interface ContactosListProps {
+  listado: ContactoEmergencia[];
+  onRefresh: () => void; // prop para recargar
+}
+
+export default function ContactosList({ listado, onRefresh }: ContactosListProps) {
   const [idUsuario, setIdUsuario] = useState<number | null>(null);
 
-  const obtenerContactosEmergencia = async () => {
-    try {
-      const id = await AsyncStorage.getItem("userId");
-      if (id !== null) {
-        setIdUsuario(Number(id));
-        // Usa el firebaseId para obtener los hábitos
-        const listado = await getContactoEmergenciaByIdUser(Number(id));
-        console.log("Listado de contacto de emergencia obtenidos:", listado);
-        if (listado && listado.length > 0) {
-          setListadoContactoEmergencia(listado); // Establece los hábitos
-        } else {
-          console.warn("No existen contactos de emergencia para este usuario");
-        }
-      } else {
-        console.warn("No se encontró ningún ID de Firebase en AsyncStorage");
-      }
-    } catch (error) {
-      console.error("Error al cargar los contactos de emergencia:", error);
-    }
-  };
-
   useEffect(() => {
-    obtenerContactosEmergencia();
+    const fetchIdUsuario = async () => {
+      try {
+        const id = await AsyncStorage.getItem("userId");
+        if (id !== null) {
+          setIdUsuario(Number(id));
+        }
+      } catch (error) {
+        console.error("Error al obtener el idUsuario:", error);
+      }
+    };
+
+    fetchIdUsuario();
   }, []);
 
   // Función para marcar un contacto como predeterminado
@@ -69,10 +60,7 @@ export default function ContactosList({}) {
       // Llamar a la función deleteContactoEmergencia para eliminarlo de la base de datos
       const success = await deleteContactoEmergencia(id);
       if (success) {
-        // Si la eliminación fue exitosa, actualizar el listado
-        setListadoContactoEmergencia((prevListado) =>
-          prevListado.filter((item) => item.id !== id)
-        );
+        onRefresh(); // Llama a la función de refresco después de eliminar
         console.log("Contacto eliminado con éxito");
       } else {
         console.log("Error al eliminar el contacto");
@@ -81,6 +69,10 @@ export default function ContactosList({}) {
       console.error("Error al eliminar el contacto:", error);
     }
   };
+
+  useEffect(() => {
+    onRefresh(); 
+  }, [onRefresh]);
 
   return (
     <ScrollView

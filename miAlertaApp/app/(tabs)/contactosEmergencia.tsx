@@ -17,14 +17,33 @@ import { ThemedView } from "@/components/ThemedView";
 import ContactosList from "@/components/contactos/contactosList";
 import AgregarContacto from "@/components/contactos/contactoAdd";
 
+//database
+import { getContactoEmergenciaByIdUser, ContactoEmergencia } from "../../database/database";
+
+
+
 export default function ContactosEmergenciaScreen() {
   //modal para agregar contacto
   const [modalVisible, setModalVisible] = useState(false);
+  const [listado, setListadoContactoEmergencia] = useState<ContactoEmergencia[]>([]); 
 
-  // Función para cerrar el modal y recargar los contactos
+
   const handleCloseModal = () => {
     setModalVisible(false);
-   
+  };
+
+  
+  const refreshContactList = async () => {
+    try {
+      const id = await AsyncStorage.getItem("userId");
+      if (id !== null) {
+        const listado = await getContactoEmergenciaByIdUser(Number(id));
+        console.log("Listado actualizado:", listado);
+        setListadoContactoEmergencia(listado); // Actualiza el estado con los nuevos contactos
+      }
+    } catch (error) {
+      console.error("Error al actualizar la lista de contactos:", error);
+    }
   };
 
   return (
@@ -45,7 +64,7 @@ export default function ContactosEmergenciaScreen() {
       </TouchableOpacity>
 
       {/* Lista de contactos */}
-      <ContactosList />
+      <ContactosList listado={listado} onRefresh={refreshContactList} />
 
       {/* Modal para agregar contactos */}
       <Modal
@@ -56,7 +75,10 @@ export default function ContactosEmergenciaScreen() {
       >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <AgregarContacto onClose={handleCloseModal}/>
+          <AgregarContacto 
+              onClose={handleCloseModal} 
+              onContactAdded={refreshContactList} 
+            />
 
             <TouchableOpacity
               onPress={() => setModalVisible(false)}
