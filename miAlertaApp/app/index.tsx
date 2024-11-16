@@ -55,6 +55,7 @@ const Login = () => {
   
       if (user) {
         await AsyncStorage.setItem("userId", user.id.toString());
+        await AsyncStorage.setItem("userName", user.nombre);
   
         // Verificar si el usuario desea configurar la autenticación biométrica
         const hasBiometricAuth = await AsyncStorage.getItem("hasBiometricAuth");
