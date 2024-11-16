@@ -18,7 +18,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //componentes
 import { EmergencyButton } from '@/components/home/EmergencyButton';
-import HeaderBar from "@/components/HeaderBar";
 import { RootStackParamList } from "@/components/navigation/RootNavigator.types";
 
 type ScreenNavigationProp = StackNavigationProp<RootStackParamList>;
