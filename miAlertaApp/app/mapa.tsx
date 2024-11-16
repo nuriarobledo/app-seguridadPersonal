@@ -4,6 +4,7 @@ import { View, StyleSheet, Alert, Text } from 'react-native';
 import axios from 'axios';
 import * as Location from 'expo-location';
 
+
 type Lugar = {
   lat: string;
   lon: string;
@@ -19,6 +20,7 @@ type Region = {
 
 
 export default function Mapa() {
+
   const [lugares, setLugares] = useState<Lugar[]>([]);
   const [region, setRegion] = useState<Region | null>(null);
   const [ubicacionActual, setUbicacionActual] = useState<{ latitude: number; longitude: number } | null>(null);
