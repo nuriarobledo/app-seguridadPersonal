@@ -15,14 +15,12 @@ import { ThemedView } from "@/components/ThemedView";
 import { ThemedInput } from "@/components/ThemedInput";
 import ThemedIcon from "@/components/ThemedIcon";
 import { RootStackParamList } from "../assets/types";
-import * as LocalAuthentication from "expo-local-authentication";
 import SHA256 from "crypto-js/sha256";
 
 //firebase
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 
 //componentes
-import handleRegistroBiometrico from "../components/login/HuellaRegistro";
 import validarDataRegistroUsuario from "../components/validaciones/validarDataRegistroUsuario";
 
 //data
@@ -39,16 +37,7 @@ const Registro = () => {
   const [email, setEmail] = useState("");
   const [celular, setCelular] = useState("");
   const [pin, setPin] = useState("");
-  const [huellaDactilar, setHuellaDactilar] = useState("");
-  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
 
-  useEffect(() => {
-    const checkBiometricSupport = async () => {
-      const compatible = await LocalAuthentication.hasHardwareAsync();
-      setIsBiometricSupported(compatible);
-    };
-    checkBiometricSupport();
-  }, []);
 
   const handleRegistro = async () => {
     if (!validarDataRegistroUsuario(nombre, email, celular, pin)) {
@@ -129,17 +118,6 @@ const Registro = () => {
         secureTextEntry
         keyboardType="numeric"
       />
-      {/* Registro de huella dactilar */}
-      {isBiometricSupported && (
-        <TouchableOpacity
-          style={styles.buttonHuella}
-          onPress={() => handleRegistroBiometrico(navigation)}
-        >
-          <ThemedIcon name="finger-print" size={24} />
-          <ThemedText>Registrar Huella Dactilar</ThemedText>
-        </TouchableOpacity>
-      )}
-
       {/* boton registro */}
       <TouchableOpacity
         style={styles.buttonRegistarme}
