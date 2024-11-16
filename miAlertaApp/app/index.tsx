@@ -55,6 +55,7 @@ const Login = () => {
   
       if (user) {
         await AsyncStorage.setItem("userId", user.id.toString());
+        await AsyncStorage.setItem("userName", user.nombre);
   
         // Verificar si el usuario desea configurar la autenticación biométrica
         const hasBiometricAuth = await AsyncStorage.getItem("hasBiometricAuth");
@@ -97,6 +98,19 @@ const Login = () => {
       Alert.alert("Error", "Primero debe configurar la autenticación biométrica iniciando sesión con su PIN.");
     }
   };
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        // si no hay usuario elimina la huella guardada
+        await AsyncStorage.removeItem("hasBiometricAuth");
+        navigation.navigate("index");
+      }
+    };
+
+    checkUser();
+  }, []);
 
   return (
     <ThemedView style={styles.container}>
