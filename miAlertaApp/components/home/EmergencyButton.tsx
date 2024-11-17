@@ -28,6 +28,9 @@ export const EmergencyButton = () => {
   const [idUsuario, setIdUsuario] = useState<number | null>(null);
   // "pulsacion""
   const pulseAnim = useState(new Animated.Value(1))[0];
+  //valor para la sacudida
+  const [shakeCount, setShakeCount] = useState(0);
+  const shakeThreshold = 5;
 
 
   // Función para obtener contactos de emergencia
@@ -102,26 +105,36 @@ export const EmergencyButton = () => {
     // acelerometro
     const subscription = Accelerometer.addListener(accelerometerData => {
       const { x, y, z } = accelerometerData;
-      const shakeThreshold = 1.5; 
+      const gForce = Math.sqrt(x * x + y * y + z * z);
 
-      // Detectar sacudida
-      if (Math.abs(x) > shakeThreshold || Math.abs(y) > shakeThreshold || Math.abs(z) > shakeThreshold) {
-        handlePress(); 
+      // detecta sacudida
+      if (gForce > shakeThreshold) {
+        setShakeCount(prevCount => prevCount + 1); 
+
+        // verifica si hubo 3 sacudidas
+        if (shakeCount + 1 >= 3) { 
+          handlePress(); 
+          resetShakeCount();
+        }
       }
     });
 
-    // inicia el acelerometro
     Accelerometer.setUpdateInterval(100); // en milisegundos
 
     return () => {
-      subscription.remove();
+      subscription.remove(); 
     };
     
-  }, [timerActive, countdown, emergenciaPresionada]);
+  }, [timerActive, countdown, emergenciaPresionada, shakeCount]);
+
+  const resetShakeCount = () => {
+    setShakeCount(0); 
+  };
 
   const handleAppStateChange = (nextAppState: string) => {
     if (nextAppState === "inactive" || nextAppState === "background") {
       resetButton();
+      resetShakeCount();
     }
   };
 
