@@ -11,6 +11,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SMS from "expo-sms";
 import * as Location from "expo-location";
+import { Accelerometer } from 'expo-sensors';
 
 //data
 import {
@@ -25,9 +26,9 @@ export const EmergencyButton = () => {
   const [timerActive, setTimerActive] = useState(false);
   const [listado, setListadoContactoEmergencia] = useState<ContactoEmergencia[]>([]); 
   const [idUsuario, setIdUsuario] = useState<number | null>(null);
-  
   // "pulsacion""
   const pulseAnim = useState(new Animated.Value(1))[0];
+
 
   // Función para obtener contactos de emergencia
   const obtenerContactosEmergencia = async () => {
@@ -98,9 +99,24 @@ export const EmergencyButton = () => {
       ).start();
     }
 
+    // acelerometro
+    const subscription = Accelerometer.addListener(accelerometerData => {
+      const { x, y, z } = accelerometerData;
+      const shakeThreshold = 1.5; 
+
+      // Detectar sacudida
+      if (Math.abs(x) > shakeThreshold || Math.abs(y) > shakeThreshold || Math.abs(z) > shakeThreshold) {
+        handlePress(); 
+      }
+    });
+
+    // inicia el acelerometro
+    Accelerometer.setUpdateInterval(100); // en milisegundos
+
     return () => {
-      if (timerActive) clearTimeout(Number(timerActive));
+      subscription.remove();
     };
+    
   }, [timerActive, countdown, emergenciaPresionada]);
 
   const handleAppStateChange = (nextAppState: string) => {
