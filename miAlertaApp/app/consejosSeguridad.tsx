@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-
+import { useNavigation } from "@react-navigation/native";
 import AntDesign from '@expo/vector-icons/AntDesign';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 
@@ -15,6 +15,15 @@ const consejos = [
 ];
 
 const InformacionSeguridad: React.FC = () => {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,  // Asegura que la barra de navegación esté visible
+      headerTitle: '',    // Oculta el título
+    });
+  }, [navigation]);
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}

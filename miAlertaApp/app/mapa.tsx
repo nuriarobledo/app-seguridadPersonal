@@ -3,7 +3,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { View, StyleSheet, Alert, Text } from 'react-native';
 import axios from 'axios';
 import * as Location from 'expo-location';
-
+import { useNavigation } from "@react-navigation/native";
 
 type Lugar = {
   lat: string;
@@ -20,6 +20,14 @@ type Region = {
 
 
 export default function Mapa() {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerShown: true,  // Asegura que la barra de navegación esté visible
+      headerTitle: '',    // Oculta el título
+    });
+  }, [navigation]);
 
   const [lugares, setLugares] = useState<Lugar[]>([]);
   const [region, setRegion] = useState<Region | null>(null);
@@ -86,6 +94,9 @@ export default function Mapa() {
           viewbox: `${lon - delta},${lat + delta},${lon + delta},${lat - delta}`,
           bounded: 1 // limita los resultados a la viewbox
         },
+        headers: {
+          'User-Agent': 'miAlertaApp/1.0 (https://github.com/nuriarobledo/app-seguridadPersonal/tree/main)'
+        }
       });
 
       return response.data.map((item: any) => ({

@@ -24,6 +24,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { EmergencyButton } from '@/components/home/EmergencyButton';
 import { RootStackParamList } from "@/components/navigation/RootNavigator.types";
 import { PoliciaCall, BomberosCall, AmbulanciaCall } from "@/components/home/EmergencyCallButton";
+import ThemedIcon from "@/components/ThemedIcon";
 
 type ScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -71,7 +72,7 @@ export default function HomeScreen() {
           <ThemedView style={styles.greetingContainer}>
             <ThemedText type="title" style={styles.title}>Hola, {userName}!</ThemedText>
             <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-              <Icon name="log-out-outline" size={30} color={"white"} />
+              <ThemedIcon name="log-out-outline" size={30} />
             </TouchableOpacity>
 
           </ThemedView>
