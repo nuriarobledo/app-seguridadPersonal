@@ -38,7 +38,6 @@ export default function ContactosEmergenciaScreen() {
       const id = await AsyncStorage.getItem("userId");
       if (id !== null) {
         const listado = await getContactoEmergenciaByIdUser(Number(id));
-        console.log("Listado actualizado:", listado);
         setListadoContactoEmergencia(listado); // Actualiza el estado con los nuevos contactos
       }
     } catch (error) {
