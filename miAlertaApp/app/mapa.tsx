@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import { View, StyleSheet, Alert, Text } from 'react-native';
+import { View, StyleSheet, Alert, Text, TouchableOpacity, ScrollView } from 'react-native';
 import axios from 'axios';
 import * as Location from 'expo-location';
 import { useNavigation } from "@react-navigation/native";
+
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import ThemedIcon from "@/components/ThemedIcon";
+
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 type Lugar = {
   lat: string;
@@ -128,7 +134,7 @@ export default function Mapa() {
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    const distancia = 6371000 * c; 
+    const distancia = 6371000 * c;
 
     return distancia <= distanciaMaxima; // true si esta dentro del rango
   };
@@ -136,7 +142,7 @@ export default function Mapa() {
   //funcion para obtener el color del pin segun el lugar
   const obtenerColorPin = (displayName: string) => {
     if (
-      displayName.toLowerCase().includes("policía") || 
+      displayName.toLowerCase().includes("policía") ||
       displayName.toLowerCase().includes("comisaría")) {
       return "blue";
     } else if (
@@ -148,18 +154,29 @@ export default function Mapa() {
     ) {
       return "green";
     }
-    return "yellow"; 
+    return "yellow";
   };
 
   const manejarSeleccionMarcador = (lugar: Lugar) => {
     setLugarSeleccionado(lugar);
   };
 
+  const handleInfo = () => {
+    Alert.alert(
+      "Información",
+      "Presione un 'Pin' para obtener más información sobre el lugar.",
+      [{ text: "OK" }]
+    );
+  };
+
   return (
-    <View style={{ flex: 1 }}>
-      <Text style={styles.titulo}>Presione un Pin para obtener más información</Text>
+    <ThemedView style={{ flex: 1 }}>
+      <TouchableOpacity onPress={handleInfo} style={styles.infoButton}>
+        <ThemedIcon name="information-circle-outline" size={36} />
+      </TouchableOpacity>
+
       {region ? (
-        <View style={styles.mapContainer}>
+        <ThemedView style={styles.mapContainer}>
           <MapView
             style={styles.map}
             region={region}
@@ -186,22 +203,23 @@ export default function Mapa() {
               />
             ))}
           </MapView>
-          
+
           {/* Mostrar información del lugar seleccionado */}
           {lugarSeleccionado && (
-            <View style={styles.infoContainer}>
+            <ThemedView style={styles.infoContainer}>
               <Text style={styles.infoTitle}>{lugarSeleccionado.display_name}</Text>
               <Text>Latitud: {lugarSeleccionado.lat}</Text>
               <Text>Longitud: {lugarSeleccionado.lon}</Text>
-            </View>
+            </ThemedView>
           )}
-        </View>
+        </ThemedView>
       ) : (
-        <View style={styles.loadingContainer}>
+        <ThemedView style={styles.loadingContainer}>
           <Text>Cargando mapa...</Text>
-        </View>
+        </ThemedView>
       )}
-    </View>
+
+    </ThemedView>
   );
 }
 
@@ -222,37 +240,22 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 10,
   },
-  titulo: {
-    fontSize: 20, 
-    fontWeight: 'bold', 
-    padding: 10,
-    textAlign: 'center',
-    color: '#FFFFFF', 
-    marginTop: 80,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', 
-    shadowColor: '#000', 
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5, 
+  infoButton: {
+    marginLeft: 370
   },
-  
- infoContainer:{
-   position:'absolute',
-   bottom:'10%',
-   left:'5%',
-   right:'5%',
-   backgroundColor:'rgba(255,255,255,0.8)',
-   paddingVertical:'5%',
-   paddingHorizontal:'5%',
-   borderRadius: 10,
-   elevation:5
- },
- infoTitle:{
-   fontSize:18,
-   fontWeight:'bold'
- }
+  infoContainer: {
+    position: 'absolute',
+    bottom: '10%',
+    left: '5%',
+    right: '5%',
+    backgroundColor: 'rgba(255,255,255,0.8)',
+    paddingVertical: '5%',
+    paddingHorizontal: '5%',
+    borderRadius: 10,
+    elevation: 5,
+  },
+  infoTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  }
 });
