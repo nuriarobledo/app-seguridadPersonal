@@ -30,7 +30,7 @@ export const EmergencyButton = () => {
   const pulseAnim = useState(new Animated.Value(1))[0];
   //valor para la sacudida
   const [shakeCount, setShakeCount] = useState(0);
-  const shakeThreshold = 1.5;
+  const shakeThreshold = 2.5;
   const [lastShakeTime, setLastShakeTime] = useState(0);
 
 
