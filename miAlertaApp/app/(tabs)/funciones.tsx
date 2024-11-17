@@ -44,13 +44,15 @@ export default function FuncionesScreen() {
         <ThemedText style={styles.buttonText}>Consejos de seguridad</ThemedText>
       </TouchableOpacity>
 
-      {/* Botón para compartir ubicacion real*/}
+      {/* Botón para compartir ubicacion*/}
       <TouchableOpacity 
         style={styles.button} 
         onPress={CompartirUbicacion}
       >
-        <ThemedText style={styles.buttonText}>Compartir ubicación en tiempo real</ThemedText>
+        <ThemedText style={styles.buttonText}>Compartir ubicación</ThemedText>
       </TouchableOpacity>
+
+      
 
     </ParallaxScrollView>
   );
@@ -68,14 +70,14 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   button: {
-    backgroundColor: '#007BFF', // Color del botón
+    backgroundColor: '#007BFF',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
-    marginVertical: 10, // Espaciado vertical
+    marginVertical: 10, 
   },
   buttonText: {
-    color: '#FFFFFF', // Color del texto del botón
+    color: '#FFFFFF',
     fontSize: 16,
   },
 });
