@@ -9,6 +9,8 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../assets/types";
 
+import { CompartirUbicacion} from "@/components/funciones/CompartirUbicacion";
+
 type ScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "funciones"
@@ -51,6 +53,14 @@ export default function FuncionesScreen() {
       >
         <ThemedText style={styles.buttonText}>Llamada Falsa</ThemedText>
       </TouchableOpacity>
+      {/* Botón para compartir ubicacion real*/}
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={CompartirUbicacion}
+      >
+        <ThemedText style={styles.buttonText}>Compartir ubicación en tiempo real</ThemedText>
+      </TouchableOpacity>
+
     </ParallaxScrollView>
   );
 }

@@ -3,7 +3,8 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -13,18 +14,27 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import Icon from "react-native-vector-icons/Ionicons";
 
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 //componentes
 import { EmergencyButton } from '@/components/home/EmergencyButton';
 import { RootStackParamList } from "@/components/navigation/RootNavigator.types";
+import { PoliciaCall, BomberosCall, AmbulanciaCall } from "@/components/home/EmergencyCallButton";
 
 type ScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
 export default function HomeScreen() {
   const navigation = useNavigation<ScreenNavigationProp>();
   const [userName, setUserName] = useState<string | null>(null);
+
+  //llamadas
+  const { handlePoliceCall } = PoliciaCall();
+  const { handleBomberosCall } = BomberosCall();
+  const { handleAmbulanciaCall } = AmbulanciaCall();
 
   useEffect(() => {
     async function fetchUserName() {
@@ -58,32 +68,69 @@ export default function HomeScreen() {
       <ScrollView style={styles.scrollView}
       >
         <ThemedView style={styles.titleContainer}>
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-            <Icon name="log-out-outline" size={30} color={"white"} />
-          </TouchableOpacity>
-          <ThemedText type="title" style={styles.title}>Bienvenido {userName}!</ThemedText>
-          <HelloWave />
+          <ThemedView style={styles.greetingContainer}>
+            <ThemedText type="title" style={styles.title}>Hola, {userName}!</ThemedText>
+            <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+              <Icon name="log-out-outline" size={30} color={"white"} />
+            </TouchableOpacity>
+
+          </ThemedView>
         </ThemedView>
 
         {/* Botón de Emergencia */}
         <EmergencyButton />
+
+        {/* Línea separadora */}
+        <ThemedView style={styles.separator} />
+
+        {/* Sección de Acciones Rápidas */}
+        <ThemedView style={styles.quickActionsContainer}>
+          <ThemedText style={styles.sectionTitle}>Marcado Rápido</ThemedText>
+          <ThemedView style={styles.actionsRow}>
+            <ThemedView style={styles.actionItem}>
+              <TouchableOpacity onPress={handlePoliceCall} style={styles.botonLLamar}>
+                <MaterialIcons name="local-police" size={30} color="white" />
+              </TouchableOpacity>
+              <ThemedText>Policía</ThemedText>
+            </ThemedView>
+
+            <ThemedView style={styles.actionItem}>
+              <TouchableOpacity onPress={handleBomberosCall} style={styles.botonLLamar}>
+                <FontAwesome6 name="house-fire" size={28} color="white" />
+              </TouchableOpacity>
+              <ThemedText>Bomberos</ThemedText>
+            </ThemedView>
+
+            <ThemedView style={styles.actionItem}>
+              <TouchableOpacity onPress={handleAmbulanciaCall} style={styles.botonLLamar}>
+                <FontAwesome5 name="ambulance" size={26} color="white" />
+              </TouchableOpacity>
+              <ThemedText>Ambulancia</ThemedText>
+            </ThemedView>
+
+          </ThemedView>
+        </ThemedView>
       </ScrollView>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
   titleContainer: {
-    flexDirection: "column",
-    position: "relative",
-    padding: 25,
+    padding: 5,
+    marginBottom: 30,
+  },
+  greetingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
   },
   title: {
     fontSize: 24,
-    marginTop: 50,
-    marginBottom: 20,
-    fontWeight: "bold",
-    textAlign: "left",
   },
   stepContainer: {
     gap: 8,
@@ -96,14 +143,50 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
   },
-  scrollView: {
-    paddingHorizontal: 0, 
-  },
   logoutButton: {
-    position: "absolute",
-    top: 10,
-    right: 0,
-    marginTop: 10,
+    marginLeft: 30,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#a7a7a7',
+    marginVertical: 10,
+
+  },
+  quickActionsContainer: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 25,
+    textAlign: 'center',
+  },
+  actionButton: {
+    flexGrow: 1,
+    backgroundColor: '#007BFF',
+    paddingVertical: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 8, 
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around', 
+  },
+  actionItem: {
+    alignItems: 'center',
+  },
+  botonLLamar: {
+    backgroundColor: "#1d44e3",
+    padding: 0,
+    borderRadius: 35,
+    width: 60,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 
 });
