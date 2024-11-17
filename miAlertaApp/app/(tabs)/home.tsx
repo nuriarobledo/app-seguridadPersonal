@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   View,
+  Alert
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -14,6 +15,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import Icon from "react-native-vector-icons/Ionicons";
 
+//iconos
+import Ionicons from '@expo/vector-icons/Ionicons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -24,6 +27,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { EmergencyButton } from '@/components/home/EmergencyButton';
 import { RootStackParamList } from "@/components/navigation/RootNavigator.types";
 import { PoliciaCall, BomberosCall, AmbulanciaCall } from "@/components/home/EmergencyCallButton";
+
+
 
 type ScreenNavigationProp = StackNavigationProp<RootStackParamList>;
 
@@ -59,6 +64,14 @@ export default function HomeScreen() {
     }
   };
 
+  const handleInfo = () => {
+    Alert.alert(
+      "Información",
+      "Para activar el botón de 'Emergencia' debe presionar el botón o sacudir dos veces el celular",
+      [{ text: "OK" }] 
+    );
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
@@ -70,10 +83,12 @@ export default function HomeScreen() {
         <ThemedView style={styles.titleContainer}>
           <ThemedView style={styles.greetingContainer}>
             <ThemedText type="title" style={styles.title}>Hola, {userName}!</ThemedText>
+            <TouchableOpacity onPress={handleInfo} style={styles.infoButton}>
+            <Ionicons name="information-circle-outline" size={30} color="white" />
+            </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
               <Icon name="log-out-outline" size={30} color={"white"} />
             </TouchableOpacity>
-
           </ThemedView>
         </ThemedView>
 
@@ -144,7 +159,10 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   logoutButton: {
-    marginLeft: 30,
+    marginLeft: 10,
+  },
+  infoButton: {
+    marginLeft: 105
   },
   separator: {
     height: 1,
