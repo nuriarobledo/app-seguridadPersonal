@@ -35,7 +35,7 @@ export default function FuncionesScreen() {
         style={styles.button}
         onPress={() => navigation.navigate("mapa")}
       >
-        <ThemedText style={styles.buttonText}>Mapa</ThemedText>
+        <ThemedText style={styles.buttonText}>Mapa para Emergencias</ThemedText>
       </TouchableOpacity>
 
       {/* Botón para navegar a consejosSeguridad.tsx */}
