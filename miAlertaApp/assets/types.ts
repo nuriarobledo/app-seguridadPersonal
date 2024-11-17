@@ -5,5 +5,6 @@ export type RootStackParamList = {
   funciones: undefined; // Pantalla de funciones
   mapa: undefined; // Pantalla del mapa
   consejosSeguridad: undefined; // Pantalla de consejos de seguridad
+  llamadaFalsa: undefined; // Pantalla de llamada falsa
   '+not-found': undefined; // Pantalla no encontrada
 };

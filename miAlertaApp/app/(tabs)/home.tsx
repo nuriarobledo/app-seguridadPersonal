@@ -27,6 +27,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { EmergencyButton } from '@/components/home/EmergencyButton';
 import { RootStackParamList } from "@/components/navigation/RootNavigator.types";
 import { PoliciaCall, BomberosCall, AmbulanciaCall } from "@/components/home/EmergencyCallButton";
+import ThemedIcon from "@/components/ThemedIcon";
 
 
 
@@ -87,7 +88,7 @@ export default function HomeScreen() {
             <Ionicons name="information-circle-outline" size={30} color="white" />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-              <Icon name="log-out-outline" size={30} color={"white"} />
+              <ThemedIcon name="log-out-outline" size={30} />
             </TouchableOpacity>
           </ThemedView>
         </ThemedView>
