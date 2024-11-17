@@ -68,7 +68,7 @@ export default function HomeScreen() {
   const handleInfo = () => {
     Alert.alert(
       "Información",
-      "Para activar el botón de 'Emergencia' debe presionar el botón o sacudir dos veces el celular",
+      "Para activar el botón de 'Emergencia' debe presionar el botón o sacudir dos veces el celular.",
       [{ text: "OK" }] 
     );
   };
@@ -85,7 +85,7 @@ export default function HomeScreen() {
           <ThemedView style={styles.greetingContainer}>
             <ThemedText type="title" style={styles.title}>Hola, {userName}!</ThemedText>
             <TouchableOpacity onPress={handleInfo} style={styles.infoButton}>
-            <Ionicons name="information-circle-outline" size={30} color="white" />
+            <ThemedIcon name="information-circle-outline" size={30}  />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
               <ThemedIcon name="log-out-outline" size={30} />
