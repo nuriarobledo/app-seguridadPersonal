@@ -11,4 +11,4 @@ Compartir Ubicación: Envía tu ubicación a través de mensajes o WhatsApp.
 Marcado Rápido: Acceso rápido a los números de emergencia (Policía, Bomberos, Ambulancia).
 
 # Realizada para la materia Aplicaciones Móviles de UTN FRLP. 
-# Por Robledo Nuria y Soberón Milafros
+# Por Robledo Nuria y Soberón Milagros
