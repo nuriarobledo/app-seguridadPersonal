@@ -30,7 +30,8 @@ export const EmergencyButton = () => {
   const pulseAnim = useState(new Animated.Value(1))[0];
   //valor para la sacudida
   const [shakeCount, setShakeCount] = useState(0);
-  const shakeThreshold = 5;
+  const shakeThreshold = 1.5;
+  const [lastShakeTime, setLastShakeTime] = useState(0);
 
 
   // Función para obtener contactos de emergencia
@@ -107,19 +108,24 @@ export const EmergencyButton = () => {
       const { x, y, z } = accelerometerData;
       const gForce = Math.sqrt(x * x + y * y + z * z);
 
-      // detecta sacudida
+      // detectar sacudida
       if (gForce > shakeThreshold) {
-        setShakeCount(prevCount => prevCount + 1); 
+        const currentTime = Date.now();
+        
+        if (currentTime - lastShakeTime > 400) { 
+          setShakeCount(prevCount => prevCount + 1); 
+          setLastShakeTime(currentTime); 
 
-        // verifica si hubo 3 sacudidas
-        if (shakeCount + 1 >= 3) { 
-          handlePress(); 
-          resetShakeCount();
+          // Verificar si hubo dos sacudidas
+          if (shakeCount + 1 >= 2) { 
+            handlePress(); 
+            resetShakeCount();
+          }
         }
       }
     });
 
-    Accelerometer.setUpdateInterval(100); // en milisegundos
+    Accelerometer.setUpdateInterval(100); 
 
     return () => {
       subscription.remove(); 
